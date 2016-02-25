@@ -4,3 +4,5 @@ alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 alias g='git'
 alias gs='git status'
 alias gco='git checkout master'
+
+alias vim='/usr/local/bin/mvim -v'
