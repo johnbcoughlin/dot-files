@@ -1,0 +1,6 @@
+-Xms128m
+-Xmx750m
+-XX:MaxPermSize=350m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseCompressedOops
+-Dawt.useSystemAAFontSettings=on

@@ -682,7 +682,8 @@
         <mark key="^" line="10" column="33" />
         <mark key="." line="10" column="33" />
       </file>
-      <file name="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" timestamp="1456016502729">
+      <file name="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" timestamp="1456436871752">
+        <mark key="'" line="17" column="2" />
         <mark key="[" line="24" column="60" />
         <mark key="]" line="24" column="78" />
         <mark key="." line="24" column="78" />
@@ -6702,11 +6703,6 @@
       </file>
     </filemarks>
     <jumps>
-      <jump line="65" column="20" filename="$USER_HOME$/src/inscriptive/sample/src/main/java/com/inscriptive/sample/actions/DatasetActions.java" />
-      <jump line="15" column="1" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/query.proto" />
-      <jump line="84" column="25" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/java/com/inscriptive/sample/Variable.java" />
-      <jump line="88" column="10" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/service.proto" />
-      <jump line="104" column="11" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/service.proto" />
       <jump line="108" column="11" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/service.proto" />
       <jump line="109" column="10" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/service.proto" />
       <jump line="112" column="14" filename="$USER_HOME$/src/inscriptive/sample/api/src/main/proto/inscriptive/sample/service.proto" />
@@ -6802,6 +6798,11 @@
       <jump line="72" column="0" filename="$USER_HOME$/src/inscriptive/script/run-services" />
       <jump line="13" column="0" filename="$USER_HOME$/src/inscriptive/script/run-services" />
       <jump line="26" column="74" filename="$USER_HOME$/src/inscriptive/discovery/src/test/java/com/inscriptive/discovery/algolia/AlgoliaTestModule.java" />
+      <jump line="56" column="0" filename="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" />
+      <jump line="34" column="0" filename="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" />
+      <jump line="26" column="0" filename="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" />
+      <jump line="13" column="0" filename="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" />
+      <jump line="17" column="2" filename="$USER_HOME$/src/inscriptive/common/lifecycle/src/main/java/com/inscriptive/common/lifecycle/Lifecycle.java" />
     </jumps>
     <registers>
       <register name="a" type="4">

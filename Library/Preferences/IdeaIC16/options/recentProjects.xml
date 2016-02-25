@@ -56,12 +56,12 @@
         <entry key="$USER_HOME$/src/inscriptive">
           <value>
             <RecentProjectMetaInfo>
-              <option name="build" value="IC-144.2925" />
+              <option name="build" value="IC-144.4199" />
               <option name="productionCode" value="IC" />
               <option name="eap" value="true" />
               <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
-              <option name="projectOpenTimestamp" value="1456288211978" />
-              <option name="buildTimestamp" value="1452499200000" />
+              <option name="projectOpenTimestamp" value="1456438078428" />
+              <option name="buildTimestamp" value="1455868800000" />
             </RecentProjectMetaInfo>
           </value>
         </entry>
