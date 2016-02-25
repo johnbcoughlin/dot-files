@@ -1,0 +1,14 @@
+BashSupport
+intellij.buck.plugin
+com.squareup.intellij.plugins.builder
+Dart
+com.paperetto.dash
+com.nmatveev.idea-plugin-protobuf
+com.seanlandsman.idea.plugins.guavagenerators
+net.nicoulaj.idea.markdown
+JProfiler
+IdeaVIM
+com.haskforce
+JFlex Support
+PsiViewer
+Jetbrains TeamCity Plugin

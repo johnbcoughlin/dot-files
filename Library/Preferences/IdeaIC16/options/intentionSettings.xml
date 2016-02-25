@@ -1,0 +1,14 @@
+<application>
+  <component name="IntentionManagerSettings">
+    <ignoreAction name="Control Flow/Edit method contract" />
+    <ignoreAction name="Refactorings/Introduce local variable" />
+    <ignoreAction name="Declaration/Replace Implements with Static Import" />
+    <ignoreAction name="Imports/Add On Demand Static Import" />
+    <ignoreAction name="Imports/Expand Static Import" />
+    <ignoreAction name="Declaration/Bind Parameters to Fields" />
+    <ignoreAction name="Java/Refactorings/Introduce local variable" />
+    <ignoreAction name="Java/Annotations/Edit method contract" />
+    <ignoreAction name="Java/Annotations/Add Annotation" />
+    <ignoreAction name="Java/Imports/Expand Static Import" />
+  </component>
+</application>

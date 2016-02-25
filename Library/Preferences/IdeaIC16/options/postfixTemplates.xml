@@ -1,0 +1,14 @@
+<application>
+  <component name="PostfixTemplatesSettings">
+    <option name="langDisabledTemplates">
+      <disabled-postfix-templates lang="Java">
+        <value>
+          <set>
+            <option value=".for" />
+            <option value=".var" />
+          </set>
+        </value>
+      </disabled-postfix-templates>
+    </option>
+  </component>
+</application>

@@ -1,0 +1,83 @@
+<application>
+  <component name="RecentProjectsManager">
+    <option name="recentPaths">
+      <list>
+        <option value="$USER_HOME$/src/inscriptive" />
+        <option value="$USER_HOME$/src/angular2" />
+        <option value="$USER_HOME$/src/iota" />
+        <option value="$USER_HOME$/src/grpc-java" />
+        <option value="$USER_HOME$/src/t9" />
+        <option value="$USER_HOME$/src/netty-tutorial" />
+        <option value="$USER_HOME$/src/hsrs" />
+        <option value="$USER_HOME$/src/grpc-test" />
+        <option value="$USER_HOME$/src/jetcd" />
+        <option value="$USER_HOME$/src/etcd4j" />
+        <option value="$USER_HOME$/src/grpc-java/examples" />
+        <option value="$USER_HOME$/src/dagger" />
+        <option value="$USER_HOME$/src/maven-protoc-plugin" />
+        <option value="$USER_HOME$/src/dagger-test" />
+        <option value="$USER_HOME$/Development/inscriptive" />
+        <option value="$USER_HOME$/Development/obdd" />
+        <option value="$USER_HOME$/Development/intellij-haskforce" />
+        <option value="$USER_HOME$/Development/plugin-bug" />
+      </list>
+    </option>
+    <option name="openPaths">
+      <list>
+        <option value="$USER_HOME$/src/inscriptive" />
+      </list>
+    </option>
+    <option name="lastPath" value="$USER_HOME$/src/inscriptive" />
+    <option name="additionalInfo">
+      <map>
+        <entry key="$USER_HOME$/src/angular2">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-144.2925" />
+              <option name="productionCode" value="IC" />
+              <option name="eap" value="true" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1456286053570" />
+              <option name="buildTimestamp" value="1452499200000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/src/grpc-java">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-143.382" />
+              <option name="productionCode" value="IC" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1448296755975" />
+              <option name="buildTimestamp" value="1447142400000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/src/inscriptive">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-144.2925" />
+              <option name="productionCode" value="IC" />
+              <option name="eap" value="true" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1456288211978" />
+              <option name="buildTimestamp" value="1452499200000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/src/iota">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-143.382" />
+              <option name="productionCode" value="IC" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1449307418483" />
+              <option name="buildTimestamp" value="1447142400000" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="lastProjectLocation" value="$USER_HOME$/src" />
+  </component>
+</application>

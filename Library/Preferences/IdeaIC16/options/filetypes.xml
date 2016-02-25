@@ -1,0 +1,35 @@
+<application>
+  <component name="CommunityFileTypes" version="11">
+    <ignoreFiles list="CVS;SCCS;RCS;rcs;.DS_Store;.svn;.pyc;.pyo;*.pyc;*.pyo;.git;*.hprof;_svn;.hg;*.lib;*~;__pycache__;.bundle;*.rbc;*.dyn_hi;*.dyn_o;*.hi;*.o;" />
+    <extensionMap>
+      <mapping pattern="init_databases" type="PLAIN_TEXT" />
+      <mapping pattern="Dockerfile" type="PLAIN_TEXT" />
+      <mapping pattern="machine-id" type="PLAIN_TEXT" />
+      <mapping pattern="migrate" type="PLAIN_TEXT" />
+      <mapping pattern="create-ci-dbs" type="PLAIN_TEXT" />
+      <mapping pattern="teamcity-server" type="PLAIN_TEXT" />
+      <mapping ext="template" type="PLAIN_TEXT" />
+      <mapping ext="yml" type="PLAIN_TEXT" />
+      <mapping ext="service" type="PLAIN_TEXT" />
+      <mapping ext="yaml" type="PLAIN_TEXT" />
+      <mapping ext="tagx" type="XML" />
+      <mapping ext="jspx" type="XML" />
+    </extensionMap>
+    <setting name="fileTypeChangedCounter" value="10" />
+  </component>
+  <component name="FileTypeManager" version="16">
+    <extensionMap>
+      <mapping pattern="bounce-service" type="PLAIN_TEXT" />
+      <mapping pattern="BUCK" type="PLAIN_TEXT" />
+      <mapping pattern="start-dynamo-db" type="PLAIN_TEXT" />
+      <mapping pattern="dev-bump-dynamodb" type="PLAIN_TEXT" />
+      <mapping pattern="dictionary" type="PLAIN_TEXT" />
+      <mapping pattern="stop-services" type="PLAIN_TEXT" />
+      <mapping pattern="run-services" type="PLAIN_TEXT" />
+      <mapping pattern="Dockerfile" type="PLAIN_TEXT" />
+      <mapping pattern="small_dictionary" type="PLAIN_TEXT" />
+      <mapping pattern=".buckconfig.local" type="PLAIN_TEXT" />
+      <mapping ext="service" type="PLAIN_TEXT" />
+    </extensionMap>
+  </component>
+</application>

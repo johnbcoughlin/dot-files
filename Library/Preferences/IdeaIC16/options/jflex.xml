@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <component name="JFlexSettings">
+    <option name="ENABLED_COMPILATION" value="false" />
+    <option name="JFLEX_HOME" value="$USER_HOME$/Development/idea/tools/lexer/jflex-1.4" />
+    <option name="SKELETON_PATH" value="$USER_HOME$/Development/idea/tools/lexer/idea-flex.skeleton" />
+    <option name="ENABLED_EMBED_JAVA" value="false" />
+  </component>
+</application>
+

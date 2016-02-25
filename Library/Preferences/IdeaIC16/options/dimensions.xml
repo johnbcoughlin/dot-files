@@ -1,0 +1,110 @@
+<application>
+  <component name="DimensionService">
+    <location key="FileChooserDialogImpl.0.0.1280.800" x="427" y="73" />
+    <location key="NewModule_or_Project.wizard.0.0.1280.800" x="166" y="82" />
+    <location key="WELCOME_SCREEN.0.0.1280.800" x="639" y="230" />
+    <location key="com.intellij.ide.util.TipDialog.0.0.1280.800" x="358" y="237" />
+    <location key="OptionsEditor.0.0.1280.800" x="46" y="22" />
+    <location key="#Browse_Repositories.0.0.1280.800" x="200" y="71" />
+    <location key="new project wizard.0.0.1280.800" x="150" y="36" />
+    <location key="#com.intellij.execution.impl.EditConfigurationsDialog.0.0.1280.800" x="104" y="70" />
+    <location key="#Project_Structure.0.0.1280.800" x="0" y="22" />
+    <location key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate.0.0.1280.800" x="381" y="302" />
+    <location key="DetectedRootsChooserDialog.0.0.1280.800" x="367" y="131" />
+    <location key="#Notifications.0.0.1280.800" x="402" y="152" />
+    <location key="replaceTextDialog.0.0.1280.800" x="431" y="135" />
+    <location key="#com.intellij.ide.util.MemberChooser.0.0.1280.800" x="223" y="145" />
+    <location key="#Auto_Import.0.0.1280.800" x="418" y="176" />
+    <location key="#com.intellij.refactoring.rename.AutomaticRenamingDialog.0.0.1280.800" x="311" y="23" />
+    <location key="refactoring.ChangeSignatureDialog.0.0.1280.800" x="402" y="23" />
+    <location key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog.0.0.1280.800" x="377" y="162" />
+    <location key="#Browse_JetBrains_Plugins_.0.0.1280.800" x="200" y="70" />
+    <location key="#com.intellij.fileTypes.FileTypeChooser.0.0.1280.800" x="353" y="214" />
+    <location key="#Inspections.0.0.1280.800" x="278" y="95" />
+    <location key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog.0.0.1280.800" x="121" y="322" />
+    <location key="chooseDestDirectoryDialog.0.0.1280.800" x="435" y="192" />
+    <location key="#xdebugger.evaluate.0.0.1280.800" x="26" y="328" />
+    <location key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes.0.0.1280.800" x="395" y="286" />
+    <location key="#Intentions.0.0.1280.800" x="228" y="70" />
+    <location key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages.0.0.1280.800" x="343" y="301" />
+    <location key="RollbackChangesDialog.0.0.1280.800" x="427" y="142" />
+    <location key="#LinearAutoregressionTest_(1).0.0.1280.800" x="379" y="78" />
+    <location key="#com.intellij.refactoring.safeDelete.OverridingMethodsDialog.0.0.1280.800" x="402" y="22" />
+    <location key="DiffWindow.0.0.1280.800" x="325" y="154" />
+    <location key="#JooqDatastoreTest.0.0.1280.800" x="358" y="78" />
+    <location key="#JooqDatastoreTest.insert.0.0.1280.800" x="358" y="78" />
+    <location key="#JooqDatastoreTest.update.0.0.1280.800" x="358" y="78" />
+    <location key="#us.inscriptive.storage_in_storage.0.0.1280.800" x="379" y="71" />
+    <location key="com.intellij.history.integration.ui.views.FileHistoryDialog.0.0.1280.800" x="100" y="122" />
+    <location key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog.0.0.1280.800" x="100" y="122" />
+    <location key="#com.intellij.ide.actions.ChooseComponentsToExportDialog.0.0.1280.800" x="385" y="254" />
+    <location key="com.intellij.testIntegration.createTest.CreateTestDialog.0.0.1280.800" x="384" y="166" />
+    <location key="Maven.ArtifactSearchDialog.0.0.1280.800" x="178" y="70" />
+    <location key="#Dependency_Validation.0.0.1280.800" x="495" y="159" />
+    <location key="#xdebugger.XInspectDialog.0.0.1280.800" x="566" y="184" />
+    <location key="#com.intellij.debugger.actions.ViewTextAction.0.0.1280.800" x="478" y="270" />
+    <location key="SettingsEditor.0.0.1280.800" x="0" y="23" />
+    <location key="DiffContextDialog.0.0.1280.800" x="100" y="122" />
+    <location key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog.0.0.1280.800" x="378" y="162" />
+    <location key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog.0.0.1280.800" x="472" y="293" />
+    <location key="#build.0.0.1280.800" x="379" y="144" />
+    <location key="findTextDialog.0.0.1280.800" x="434" y="162" />
+    <location key="scopes.0.0.1280.800" x="154" y="186" />
+    <location key="VCS.ChangeListViewerDialog.0.0.1280.800" x="399" y="94" />
+    <location key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$1.0.0.1280.800" x="174" y="167" />
+    <location key="caller.chooser.dialog.0.0.1280.800" x="0" y="179" />
+    <location key="Vcs.Push.Dialog.0.0.1280.800" x="278" y="129" />
+    <location key="FileDocumentManager.FileCacheConflict.0.0.1280.800" x="273" y="22" />
+    <location key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog.0.0.1280.800" x="361" y="110" />
+    <location key="#Plugins.0.0.1280.800" x="240" y="73" />
+    <location key="#com.intellij.ide.util.MemberChooser.0.0.2560.1440" x="1093" y="443" />
+    <location key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes.0.0.2560.1440" x="1016" y="594" />
+    <location key="#com.intellij.refactoring.move.moveMembers.MoveMembersDialog.0.0.2560.1440" x="992" y="472" />
+    <location key="new project wizard.0.0.2560.1440" x="790" y="356" />
+    <location key="#Auto_Import.0.0.2560.1440" x="1060" y="491" />
+    <location key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog.0.0.2560.1440" x="1018" y="482" />
+    <location key="findTextDialog.0.0.2560.1440" x="1042" y="456" />
+    <location key="#com.intellij.refactoring.rename.AutomaticRenamingDialog.0.0.2560.1440" x="945" y="23" />
+    <location key="#com.intellij.fileTypes.FileTypeChooser.0.0.2560.1440" x="991" y="535" />
+    <size key="OptionsEditor.0.0.1280.800" width="1224" height="774" />
+    <size key="#Project_Structure.0.0.1280.800" width="1048" height="774" />
+    <size key="GridCell.Tab.0.left.0.0.1280.800" width="1280" height="223" />
+    <size key="GridCell.Tab.0.center.0.0.1280.800" width="1280" height="223" />
+    <size key="GridCell.Tab.0.right.0.0.1280.800" width="1280" height="223" />
+    <size key="GridCell.Tab.0.bottom.0.0.1280.800" width="1280" height="223" />
+    <size key="refactoring.ChangeSignatureDialog.0.0.1280.800" width="475" height="773" />
+    <size key="GridCell.Tab.1.left.0.0.1280.800" width="1280" height="277" />
+    <size key="GridCell.Tab.1.center.0.0.1280.800" width="1280" height="277" />
+    <size key="GridCell.Tab.1.right.0.0.1280.800" width="1280" height="277" />
+    <size key="GridCell.Tab.1.bottom.0.0.1280.800" width="1280" height="277" />
+    <size key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes.0.0.1280.800" width="859" height="274" />
+    <size key="#LinearAutoregressionTest_(1).0.0.1280.800" width="694" height="661" />
+    <size key="#JooqDatastoreTest.0.0.1280.800" width="694" height="661" />
+    <size key="#JooqDatastoreTest.insert.0.0.1280.800" width="694" height="661" />
+    <size key="#JooqDatastoreTest.update.0.0.1280.800" width="694" height="661" />
+    <size key="#us.inscriptive.storage_in_storage.0.0.1280.800" width="694" height="676" />
+    <size key="com.intellij.history.integration.ui.views.FileHistoryDialog.0.0.1280.800" width="1080" height="574" />
+    <size key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog.0.0.1280.800" width="1080" height="574" />
+    <size key="#xdebugger.evaluate.0.0.1280.800" width="1245" height="468" />
+    <size key="javadoc.popup.0.0.1280.800" width="600" height="419" />
+    <size key="DiffContextDialog.0.0.1280.800" width="1080" height="574" />
+    <size key="SettingsEditor.0.0.1280.800" width="1280" height="773" />
+    <size key="NewModule_or_Project.wizard.0.0.1280.800" width="948" height="655" />
+    <size key="scopes.0.0.1280.800" width="727" height="483" />
+    <size key="#com.intellij.ide.util.MemberChooser.0.0.1280.800" width="808" height="631" />
+    <size key="GridCell.Tab.0.left.0.0.2560.1440" width="2560" height="436" />
+    <size key="GridCell.Tab.0.center.0.0.2560.1440" width="2560" height="436" />
+    <size key="GridCell.Tab.0.right.0.0.2560.1440" width="2560" height="436" />
+    <size key="GridCell.Tab.0.bottom.0.0.2560.1440" width="2560" height="436" />
+    <size key="GridCell.Tab.1.left.0.0.2560.1440" width="2560" height="533" />
+    <size key="GridCell.Tab.1.center.0.0.2560.1440" width="2560" height="533" />
+    <size key="GridCell.Tab.1.right.0.0.2560.1440" width="2560" height="533" />
+    <size key="GridCell.Tab.1.bottom.0.0.2560.1440" width="2560" height="533" />
+    <size key="javadoc.popup.0.0.2560.1440" width="481" height="170" />
+    <extendedState key="com.intellij.history.integration.ui.views.FileHistoryDialog" state="0" />
+    <extendedState key="com.intellij.history.integration.ui.views.FileHistoryDialog.0" state="300" />
+    <extendedState key="DiffContextDialog" state="0" />
+    <extendedState key="com.intellij.history.integration.ui.views.FileHistoryDialog.1" state="500" />
+    <extendedState key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" state="0" />
+  </component>
+</application>

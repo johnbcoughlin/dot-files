@@ -1,0 +1,16 @@
+<application>
+  <component name="libraryTable">
+    <library name="Dart SDK">
+      <CLASSES>
+        <root url="file:///usr/local/opt/dart/libexec/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <excluded>
+        <root url="file:///usr/local/opt/dart/libexec/lib/_blink" />
+        <root url="file:///usr/local/opt/dart/libexec/lib/_chrome" />
+        <root url="file:///usr/local/opt/dart/libexec/lib/_internal" />
+      </excluded>
+    </library>
+  </component>
+</application>

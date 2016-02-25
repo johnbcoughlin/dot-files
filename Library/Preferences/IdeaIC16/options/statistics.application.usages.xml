@@ -1,0 +1,152 @@
+<application>
+  <component name="StatisticsApplicationUsages">
+    <group name="libraries">
+      <project id="angular2" values="dart,DartPackagesLibraryType" collectionTime="1456288211954" />
+    </group>
+    <group name="Git">
+      <project id="angular2" values="config.warn.about.crlf.enabled,config.repo.sync.NOT_DECIDED,config.warn.about.detached.enabled,config.force.push.enabled,config.push.autoupdate.disabled,config.cherry-pick.autocommit.disabled,config.ssh.enabled,config.push.update.all.roots.enabled,config.update.type.BRANCH_DEFAULT,config.save.policy.STASH" collectionTime="1456288211974" />
+      <project id="inscriptive" values="config.push.update.all.roots.enabled,config.warn.about.detached.enabled,config.ssh.enabled,config.force.push.enabled,config.warn.about.crlf.enabled,config.cherry-pick.autocommit.disabled,config.save.policy.STASH,config.push.autoupdate.disabled,config.repo.sync.NOT_DECIDED,config.update.type.BRANCH_DEFAULT" collectionTime="1456274067152" />
+    </group>
+    <group name="vcs">
+      <project id="dagger-parent" values="Git" collectionTime="1428783344950" />
+      <project id="grpc" values="Git" collectionTime="1448425648293" />
+      <project id="intellij-haskforce" values="Git" collectionTime="0" />
+      <project id="grpc-test" values="Git" collectionTime="1437709115013" />
+      <project id="obdd" values="Git" collectionTime="0" />
+      <project id="jetcd" values="Git" collectionTime="1435548623367" />
+      <project id="iota" values="Git" collectionTime="1449444870303" />
+      <project id="HaskForce" values="Git" collectionTime="0" />
+      <project id="etcd4j" values="Git" collectionTime="1431355828928" />
+      <project id="dagger" values="Git" collectionTime="0" />
+      <project id="maven-protoc-plugin" values="Git" collectionTime="1428777109549" />
+    </group>
+    <group name="run-configuration-type-temp">
+      <project id="t9" values="JUnit" collectionTime="1445353073516" />
+      <project id="grpc" values="GradleRunConfiguration" collectionTime="1448425648296" />
+      <project id="iota" values="JUnit" collectionTime="1449444870305" />
+      <project id="etcd4j" values="GradleRunConfiguration,JUnit" collectionTime="1431355828928" />
+      <project id="jetcd" values="JUnit" collectionTime="1435548623367" />
+      <project id="netty-tutorial" values="Application" collectionTime="1444582520202" />
+      <project id="dagger" values="Application" collectionTime="0" />
+    </group>
+    <group name="run-configuration-type">
+      <project id="intellij-haskforce" values="#org.jetbrains.idea.devkit.run.PluginConfigurationType" collectionTime="0" />
+      <project id="HaskForce" values="#org.jetbrains.idea.devkit.run.PluginConfigurationType" collectionTime="0" />
+      <project id="obdd" values="Haskell Test Configuration" collectionTime="0" />
+    </group>
+    <group name="language-level">
+      <project id="maven-protoc-plugin" values="JDK_1_6" collectionTime="1428777109582" />
+      <project id="obdd" values="JDK_1_6" collectionTime="0" />
+      <project id="intellij-haskforce" values="JDK_1_6" collectionTime="0" />
+      <project id="plugin-bug" values="JDK_1_6" collectionTime="0" />
+      <project id="jetcd" values="JDK_1_8" collectionTime="1435548623400" />
+      <project id="t9" values="JDK_1_8" collectionTime="1445353073557" />
+      <project id="dagger-test" values="JDK_1_8" collectionTime="1428189262284" />
+      <project id="iota" values="JDK_1_8" collectionTime="1449444870503" />
+      <project id="angular2" values="JDK_1_6" collectionTime="1456288211973" />
+      <project id="dagger-parent" values="JDK_1_7,JDK_1_8,JDK_1_6,JDK_1_5" collectionTime="1428783344989" />
+      <project id="dagger" values="JDK_1_6,JDK_1_7" collectionTime="0" />
+      <project id="inscriptive" values="JDK_1_8" collectionTime="1456274067151" />
+      <project id="hsrs" values="JDK_1_6" collectionTime="1440375400402" />
+      <project id="etcd4j" values="JDK_1_8" collectionTime="1431355828961" />
+      <project id="netty-tutorial" values="JDK_1_8" collectionTime="1444582520275" />
+      <project id="grpc-test" values="JDK_1_6" collectionTime="1437709115063" />
+      <project id="examples" values="JDK_1_6" collectionTime="1430706817035" />
+      <project id="grpc" values="JDK_1_6" collectionTime="1448425648350" />
+      <project id="HaskForce" values="JDK_1_8" collectionTime="0" />
+    </group>
+    <group name="file-type">
+      <project id="maven-protoc-plugin" values="XML,Properties,PLAIN_TEXT,JAVA,UNKNOWN,Protobuf,ARCHIVE,IDEA_MODULE" collectionTime="1428777109581" />
+      <project id="obdd" values="UNKNOWN,Cabal,PLAIN_TEXT,Haskell,IDEA_MODULE" collectionTime="0" />
+      <project id="intellij-haskforce" values="Cabal,Haskell,JAVA,Images,XML,UNKNOWN,HTML,SPI,ARCHIVE,Properties,IDEA_MODULE,JFlex,PLAIN_TEXT" collectionTime="0" />
+      <project id="plugin-bug" values="IDEA_MODULE,Haskell,UNKNOWN,XML" collectionTime="0" />
+      <project id="jetcd" values="UNKNOWN,Markdown,XML,JAVA,IDEA_MODULE,PLAIN_TEXT" collectionTime="1435548623400" />
+      <project id="t9" values="IDEA_MODULE,XML,JAVA,PLAIN_TEXT,UNKNOWN" collectionTime="1445353073556" />
+      <project id="dagger-test" values="JAVA,UNKNOWN,PLAIN_TEXT,IDEA_MODULE,XML" collectionTime="1428189262282" />
+      <project id="iota" values="IDEA_MODULE,XML,JAVA,UNKNOWN,PLAIN_TEXT" collectionTime="1449444870476" />
+      <project id="angular2" values="Dart,SnakeYAML,IDEA_MODULE,HTML,PLAIN_TEXT" collectionTime="1456288211935" />
+      <project id="dagger-parent" values="CSS,HTML,JavaScript,UNKNOWN,PLAIN_TEXT,Images,JAVA,IDEA_MODULE,XML" collectionTime="1428783344988" />
+      <project id="dagger" values="PLAIN_TEXT,ARCHIVE,JavaScript,HTML,XML,Images,JAVA,CSS,Bash,IDEA_MODULE,Manifest,UNKNOWN" collectionTime="0" />
+      <project id="hsrs" values="UNKNOWN" collectionTime="1440375400399" />
+      <project id="etcd4j" values="UNKNOWN,IDEA_MODULE,XML,PLAIN_TEXT,JAVA,Markdown,Groovy" collectionTime="1431355828959" />
+      <project id="netty-tutorial" values="JAVA,IDEA_MODULE,PLAIN_TEXT,XML,UNKNOWN" collectionTime="1444582520270" />
+      <project id="grpc-test" values="XML,IDEA_MODULE,UNKNOWN,Protobuf,PLAIN_TEXT" collectionTime="1437709115061" />
+      <project id="examples" values="CLASS,CSS,IDEA_MODULE,HTML,JAVA,JavaScript,JSON,Protobuf,Markdown,ARCHIVE,Manifest,UNKNOWN,XML,PLAIN_TEXT" collectionTime="1430706817034" />
+      <project id="grpc" values="PLAIN_TEXT,Groovy,UNKNOWN,XML,HTML,JavaScript,ARCHIVE,CSS,CLASS,JSON,IDEA_MODULE,Manifest,Properties,JAVA,Bash,Protobuf,Markdown,Images,C++" collectionTime="1448425648336" />
+      <project id="HaskForce" values="PLAIN_TEXT,SPI,Haskell,Images,JFlex,JAVA,Properties,UNKNOWN,Cabal,XML,ARCHIVE,HTML,IDEA_MODULE" collectionTime="0" />
+    </group>
+    <group name="module type">
+      <project id="maven-protoc-plugin" values="JAVA_MODULE" collectionTime="1428777109549" />
+      <project id="obdd" values="HASKELL_MODULE" collectionTime="0" />
+      <project id="intellij-haskforce" values="PLUGIN_MODULE" collectionTime="0" />
+      <project id="plugin-bug" values="HASKELL_MODULE" collectionTime="0" />
+      <project id="jetcd" values="JAVA_MODULE" collectionTime="1435548623367" />
+      <project id="t9" values="JAVA_MODULE" collectionTime="1445353073516" />
+      <project id="dagger-test" values="JAVA_MODULE" collectionTime="1428189262226" />
+      <project id="iota" values="JAVA_MODULE" collectionTime="1449444870304" />
+      <project id="angular2" values="WEB_MODULE" collectionTime="1456288211910" />
+      <project id="dagger-parent" values="JAVA_MODULE" collectionTime="1428783344950" />
+      <project id="dagger" values="JAVA_MODULE" collectionTime="0" />
+      <project id="inscriptive" values="JAVA_MODULE" collectionTime="1456274067100" />
+      <project id="etcd4j" values="JAVA_MODULE" collectionTime="1431355828928" />
+      <project id="netty-tutorial" values="JAVA_MODULE" collectionTime="1444582520202" />
+      <project id="grpc-test" values="JAVA_MODULE" collectionTime="1437709115013" />
+      <project id="examples" values="JAVA_MODULE" collectionTime="1430706817026" />
+      <project id="grpc" values="JAVA_MODULE" collectionTime="1448425648295" />
+      <project id="HaskForce" values="JAVA_MODULE,PLUGIN_MODULE" collectionTime="0" />
+    </group>
+  </component>
+  <component name="UsageTrigger">
+    <counts>
+      <entry feature="CreateFile.CreateFileAction" count="96" />
+      <entry feature="OpenInBrowser.Dartium" count="33" />
+      <entry feature="OpenInBrowser.default" count="4" />
+      <entry feature="execute.#org.jetbrains.idea.devkit.run.PluginConfigurationType.Run" count="4" />
+      <entry feature="execute.Application.Debug" count="53" />
+      <entry feature="execute.Application.Run" count="593" />
+      <entry feature="execute.BashConfigurationType.Run" count="1" />
+      <entry feature="execute.GradleRunConfiguration.Debug" count="53" />
+      <entry feature="execute.GradleRunConfiguration.Run" count="151" />
+      <entry feature="execute.GroovyScriptRunConfiguration.Run" count="1" />
+      <entry feature="execute.Haskell Test Configuration.Run" count="19" />
+      <entry feature="execute.JUnit.Coverage" count="2" />
+      <entry feature="execute.JUnit.Debug" count="393" />
+      <entry feature="execute.JUnit.JProfiler" count="2" />
+      <entry feature="execute.JUnit.Profile " count="9" />
+      <entry feature="execute.JUnit.Run" count="2676" />
+      <entry feature="execute.JUnit.teamcity.remote.debug.executor" count="1" />
+      <entry feature="ide.settings.Annotation_Processors" count="1" />
+      <entry feature="ide.settings.Appearance" count="3" />
+      <entry feature="ide.settings.Auto_Import" count="49" />
+      <entry feature="ide.settings.Code_Style" count="11" />
+      <entry feature="ide.settings.Colors_&amp;_Fonts" count="2" />
+      <entry feature="ide.settings.Dart" count="2" />
+      <entry feature="ide.settings.Editor" count="1" />
+      <entry feature="ide.settings.Editor_Tabs" count="2" />
+      <entry feature="ide.settings.File_and_Code_Templates" count="4" />
+      <entry feature="ide.settings.Font" count="7" />
+      <entry feature="ide.settings.General" count="7" />
+      <entry feature="ide.settings.Git" count="1" />
+      <entry feature="ide.settings.Groovy" count="3" />
+      <entry feature="ide.settings.Haskell_Compiler" count="1" />
+      <entry feature="ide.settings.Haskell_Tools" count="1" />
+      <entry feature="ide.settings.Ignored_Files" count="6" />
+      <entry feature="ide.settings.Inspections" count="1" />
+      <entry feature="ide.settings.Intentions" count="1" />
+      <entry feature="ide.settings.JFlex" count="2" />
+      <entry feature="ide.settings.Java" count="11" />
+      <entry feature="ide.settings.Keymap" count="51" />
+      <entry feature="ide.settings.Plugins" count="2" />
+      <entry feature="ide.settings.Postfix_Completion" count="1" />
+      <entry feature="ide.settings.Project_Structure" count="1" />
+      <entry feature="ide.settings.Protocol_Buffers_Compiler" count="1" />
+      <entry feature="ide.settings.Version_Control" count="1" />
+      <entry feature="ide.settings.XML" count="1" />
+      <entry feature="idea.caches.invalidated" count="6" />
+      <entry feature="ideaapp.started" count="114" />
+      <entry feature="welcome.screen.WelcomeScreen.CreateNewProject" count="3" />
+      <entry feature="welcome.screen.WelcomeScreen.ImportProject" count="8" />
+      <entry feature="welcome.screen.WelcomeScreen.OpenProject" count="1" />
+    </counts>
+  </component>
+</application>

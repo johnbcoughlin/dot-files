@@ -1,0 +1,24 @@
+<application>
+  <component name="FindRecents">
+    <findStrings>
+      <find>guice</find>
+      <find>BootstrapM</find>
+      <find>csv</find>
+      <find>com.inscriptive.correlation2</find>
+      <find>RST_STREAM</find>
+      <find>GrpcChannel</find>
+      <find>dataset-section</find>
+      <find>DatasetSection</find>
+      <find>result_component.template.</find>
+      <find>chart-full-display</find>
+    </findStrings>
+    <dirStrings>
+      <dir>$USER_HOME$/src/inscriptive/correlation</dir>
+      <dir>$USER_HOME$/src/inscriptive/foyer</dir>
+      <dir>$USER_HOME$/src/grpc-java/netty</dir>
+      <dir>$USER_HOME$/src/inscriptive/frontend</dir>
+      <dir>$USER_HOME$/src/inscriptive/web/web/components/search</dir>
+      <dir>$USER_HOME$/src/inscriptive/web/web</dir>
+    </dirStrings>
+  </component>
+</application>
