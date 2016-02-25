@@ -1,0 +1,8 @@
+[user]
+	name = Jack Coughlin
+	email = johnbcoughlin@gmail.com
+[alias]
+	co = checkout
+	b = branch
+[push]
+	default = current
