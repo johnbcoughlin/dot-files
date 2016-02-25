@@ -66,6 +66,12 @@
     <location key="findTextDialog.0.0.2560.1440" x="1042" y="456" />
     <location key="#com.intellij.refactoring.rename.AutomaticRenamingDialog.0.0.2560.1440" x="945" y="23" />
     <location key="#com.intellij.fileTypes.FileTypeChooser.0.0.2560.1440" x="991" y="535" />
+    <location key="FileChooserDialogImpl.0.0.1440.900" x="508" y="193" />
+    <location key="NewModule_or_Project.wizard.0.0.1440.900" x="357" y="136" />
+    <location key="WELCOME_SCREEN.0.0.1440.900" x="719" y="230" />
+    <location key="#Browse_Repositories.0.0.1440.900" x="307" y="123" />
+    <location key="SettingsEditor.0.0.1440.900" x="218" y="124" />
+    <location key="SettingsEditor.0.0.2560.1440" x="778" y="394" />
     <size key="OptionsEditor.0.0.1280.800" width="1224" height="774" />
     <size key="#Project_Structure.0.0.1280.800" width="1048" height="774" />
     <size key="GridCell.Tab.0.left.0.0.1280.800" width="1280" height="223" />
@@ -101,6 +107,7 @@
     <size key="GridCell.Tab.1.right.0.0.2560.1440" width="2560" height="533" />
     <size key="GridCell.Tab.1.bottom.0.0.2560.1440" width="2560" height="533" />
     <size key="javadoc.popup.0.0.2560.1440" width="481" height="170" />
+    <size key="NewModule_or_Project.wizard.0.0.1440.900" width="764" height="646" />
     <extendedState key="com.intellij.history.integration.ui.views.FileHistoryDialog" state="0" />
     <extendedState key="com.intellij.history.integration.ui.views.FileHistoryDialog.0" state="300" />
     <extendedState key="DiffContextDialog" state="0" />
