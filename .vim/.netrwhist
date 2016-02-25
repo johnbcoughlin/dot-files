@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/Users/jack/Development/safe_learning/Matlab'
+let g:netrw_dirhist_2='/Users/jack/src/locus/db/migrate'
+let g:netrw_dirhist_3='/Users/jack/src/inscriptive/vendor/buck'
+let g:netrw_dirhist_4='/Users/jack/src/bananagrams/.git'
