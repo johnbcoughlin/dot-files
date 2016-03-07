@@ -2,6 +2,8 @@ alias config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 
 # Git
 alias g='git'
+alias gb='git branch'
+alias gl='git log'
 alias gs='git status'
 alias gco='git checkout master'
 
