@@ -1,20 +1,16 @@
+execute pathogen#infect()
+
 " don't bother with vi compatibility
 set nocompatible
 
 " enable syntax highlighting
 syntax enable
 
-" configure Vundle
-filetype on " without this vim emits a zero exit status, later, because of :ft off
-filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
-" install Vundle bundles
-if filereadable(expand("~/.vimrc.bundles"))
-  source ~/.vimrc.bundles
-  source ~/.vimrc.bundles.local
-endif
+set background=light
+let g:solarized_termcolors = 16
+let g:solarized_visibility = "high"
+let g:solarized_contrast = "high"
+colorscheme solarized
 
 " ensure ftdetect et al work by including this after the Vundle stuff
 filetype plugin indent on
