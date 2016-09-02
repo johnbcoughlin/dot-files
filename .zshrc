@@ -10,3 +10,4 @@ git_branch() {
 setopt prompt_subst
 export PS1='[%n:%/] ($(git_branch)) >> '
 
+export PATH=$PATH:/Users/jack/src/inscriptive/vendor/bucktool/bin
