@@ -6,5 +6,7 @@ alias gb='git branch'
 alias gl='git log'
 alias gs='git status'
 alias gco='git checkout master'
+alias grc='git rebase --continue'
+alias gap='git add --patch'
 
 alias vim='/usr/local/bin/mvim -v'
