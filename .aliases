@@ -10,3 +10,5 @@ alias grc='git rebase --continue'
 alias gap='git add --patch'
 
 alias vim='/usr/local/bin/mvim -v'
+
+alias gbclean='git checkout master && git branch --merged | grep -v "master" | xargs git branch -d'
