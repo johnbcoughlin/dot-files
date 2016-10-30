@@ -1,1 +1,3 @@
 source ~/.vimrc
+
+let @b = 'o@Before<CR>public void before() {<CR>MockitoAnnotations.initMocks(this);<CR><Esc>'
