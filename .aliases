@@ -1,4 +1,5 @@
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias anew='source ~/.aliases'
 
 # Git
 alias g='git'
@@ -12,3 +13,4 @@ alias gap='git add --patch'
 alias vim='/usr/local/bin/mvim -v'
 
 alias gbclean='git checkout master && git branch --merged | grep -v "master" | xargs git branch -d'
+alias grim='git rebase -i master'
