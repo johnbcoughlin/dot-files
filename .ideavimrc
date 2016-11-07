@@ -1,3 +1,4 @@
 source ~/.vimrc
 
 let @b = 'o@Before<CR>public void before() {<CR>MockitoAnnotations.initMocks(this);<CR><Esc>'
+let @l = 'magg/public class<CR>wwye/{<CR>oprivate static final Logger logger = Logger.getLogger(<Esc>pa.class);<Esc>`a'
