@@ -1,3 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =1
-let g:netrw_dirhist_1='/Users/jack/src/inscriptive/.git/modules'
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/Users/jack/src/inscriptive/build/tools/src/main/java/com/inscriptive/build'
+let g:netrw_dirhist_2='/Users/jack/src/inscriptive/build/tools/src/main/java/com/inscriptive/build/tools'
+let g:netrw_dirhist_3='/Users/jack/src/NAB/nab'
