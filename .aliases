@@ -16,3 +16,5 @@ alias gbclean='git checkout master && git branch --merged | grep -v "master" | x
 alias grim='git rebase -i master'
 
 alias k='kubectl'
+
+alias julia='/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia'
