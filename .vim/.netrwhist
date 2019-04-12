@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/Users/jack/src/freewire/aws_data_integration/meta-ansible/stage'
+let g:netrw_dirhist_2='/Users/jack/src/learn-rust/hello-world'
+let g:netrw_dirhist_3='/Users/jack/src/galerkin/src/functions'
+let g:netrw_dirhist_4='/Users/jack/src/galerkin/src/plot'
