@@ -38,7 +38,7 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      ivy
-     ;; auto-completion
+     auto-completion
      ;; better-defaults
      emacs-lisp
      ;; git
@@ -64,7 +64,7 @@ values."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(org-projectile)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -317,9 +317,15 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
+  (spacemacs/set-leader-keys "o c d" 'org-cdlatex-mode)
 
+  ;; This is too easy to accidentally type
+  (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
 
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+
+  (setq yas-snippet-dirs '("~/emacs.d/mysnippets"
+                           "~/Downloads/interesting-snippets"))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -329,21 +335,29 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/org")))
  '(org-capture-templates
    (quote
-    (("i" "New in-list item" checkitem
+    (("i" "New in-list item" entry
       (file "~/org/in.org")
-      "")
-     ("n" "Next Actions" entry
-      (file "~/org/next_actions.org")
-      "* TODO %?"))))
+      "* TODO %^{Task}")
+     ("k" "New key binding" entry
+      (file+olp "~/org/emacs.org" "Key Bindings")
+      "*** Task :drill:
+%^{Task}
+**** Shortcut
+%^{Shortcut}"))))
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill)))
  '(org-preview-latex-default-process (quote dvisvgm))
+ '(org-refile-targets
+   (quote
+    ((nil :maxlevel . 9)
+     (org-agenda-files :maxlevel . 9))))
  '(package-selected-packages
    (quote
-    (cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy))))
+    (fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
