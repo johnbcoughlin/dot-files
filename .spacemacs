@@ -63,7 +63,7 @@ values."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(org-projectile)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -318,9 +318,8 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (global-set-key (kbd "C-q") 'evil-escape)
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture)
+  ;; This is too easy to accidentally type
+  (global-unset-key (kbd "S-SPC"))
 
   (setq org-latex-create-formula-image-program 'dvipng)
   )
@@ -332,14 +331,21 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/org")))
+ ;; Refile targets include this file and any file contributing to the agenda - up to 9 levels deep
+ '(org-refile-targets (quote ((nil :maxlevel . 9)
+                                  (org-agenda-files :maxlevel . 9))))
  '(org-capture-templates
    (quote
-    (("i" "New in-list item" checkitem
+    (("i" "New in-list item" entry
       (file "~/org/in.org")
-      "")
-     ("n" "Next Actions" entry
-      (file "~/org/next_actions.org")
-      "* TODO %?"))))
+      "* TODO %^{Task}")
+     ("k" "New key binding" entry
+      (file+olp "~/org/emacs.org" "Key Bindings")
+      "*** Task :drill:
+%^{Task}
+**** Shortcut
+%^{Shortcut}"))))
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill)))
