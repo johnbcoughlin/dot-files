@@ -38,7 +38,7 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      ivy
-     auto-completion
+     ;; auto-completion
      ;; better-defaults
      emacs-lisp
      ;; git
@@ -321,12 +321,16 @@ you should place your code here."
 
   ;; This is too easy to accidentally type
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
+  (define-key yas-minor-mode-map (kbd "C-y"))
 
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
-  (setq yas-snippet-dirs '("~/emacs.d/mysnippets"
-                           "~/Downloads/interesting-snippets"))
+  (setq yas-snippet-dirs '("~/org/snippets"))
   )
+
+(defun capture-snippet-file ()
+  (let ((name (read-string "Name: ")))
+    (expand-file-name (format "%s.yasnippet" name) "~/org/snippets/org-mode")))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -335,13 +339,47 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-custom-commands
+   (quote
+    ((" " "Agenda"
+      ((agenda "" nil)
+       (todo "PROG"
+             ((org-agenda-overriding-header "Currently in Progress")))
+       (tags "REFILE"
+             ((org-agenda-overriding-header "Tasks to Refile")))
+       (tags-todo "-REFILE/!TODO|NEXT"
+                  ((org-agenda-overriding-header "Todo and Next Tasks"))))
+      nil nil))))
  '(org-agenda-files (quote ("~/org")))
+ '(org-agenda-restore-windows-after-quit t t)
+ '(org-agenda-window-setup (quote other-window))
  '(org-capture-templates
    (quote
-    (("i" "New in-list item" entry
+    (("s" "Snippet")
+     ("sy" "yasnippet" plain
+      (file capture-snippet-file)
+      "# -*- mode: snippet -*-
+# key: %^{key}
+# group: %^{snippet group|math}
+# name: %^{name}
+# --
+%?
+")
+     ("sv" "Contents of selection" entry
+      (file "~/org/refile.org")
+      "* Snippet :snippet:
+%i")
+     ("i" "New in-list item" entry
       (file "~/org/in.org")
       "* TODO %^{Task}")
-     ("k" "New key binding" entry
+     ("d" "Item to drill")
+     ("df" "Miscellaneous facts" entry
+      (file "~/org/facts.org")
+      "*** Fact :drill:
+%^{Fact}
+**** Answer
+%^{Answer}")
+     ("dk" "New key binding" entry
       (file+olp "~/org/emacs.org" "Key Bindings")
       "*** Task :drill:
 %^{Task}
@@ -355,6 +393,18 @@ you should place your code here."
    (quote
     ((nil :maxlevel . 9)
      (org-agenda-files :maxlevel . 9))))
+ '(org-todo-keyword-faces
+   (quote
+    (("TODO" . "red")
+     ("NEXT" . "yellow")
+     ("PROG" . "cyan")
+     ("DONE" . "green")
+     ("WAIT" . "orange")
+     ("CANCELLED" . "grey"))))
+ '(org-todo-keywords
+   (quote
+    ((sequence "TODO(t)" "NEXT(n)" "PROG(p)" "DONE(d)")
+     (sequence "WAIT(w@/!)" "CANCELLED(c@/!)"))))
  '(package-selected-packages
    (quote
     (fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy))))
