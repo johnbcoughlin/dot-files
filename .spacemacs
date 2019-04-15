@@ -318,19 +318,22 @@ you should place your code here."
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
   (spacemacs/set-leader-keys "o c d" 'org-cdlatex-mode)
+  (spacemacs/set-leader-keys "o c i" 'org-agenda-clock-in)
+  (spacemacs/set-leader-keys "o c o" 'org-agenda-clock-out)
 
   ;; This is too easy to accidentally type
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
-  (define-key yas-minor-mode-map (kbd "C-y"))
 
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-
-  (setq yas-snippet-dirs '("~/org/snippets"))
   )
 
-(defun capture-snippet-file ()
-  (let ((name (read-string "Name: ")))
-    (expand-file-name (format "%s.yasnippet" name) "~/org/snippets/org-mode")))
+;; Used in the agenda view to filter out certain tags
+(defun my-skip-tag(tag)
+  "Skip entries that are tagged TAG"
+  (let* ((entry-tags (org-get-tags-at (point))))
+    (if (member tag entry-tags)
+        (progn (outline-next-heading) (point))
+      nil)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -339,32 +342,36 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cdlatex-command-alist
+   (quote
+    (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
+     ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
+ '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
+ '(latex-run-command "xelatex")
  '(org-agenda-custom-commands
    (quote
     ((" " "Agenda"
-      ((agenda "" nil)
+      ((agenda ""
+               ((org-agenda-skip-function
+                 (quote
+                  (my-skip-tag "drill")))))
        (todo "PROG"
              ((org-agenda-overriding-header "Currently in Progress")))
        (tags "REFILE"
              ((org-agenda-overriding-header "Tasks to Refile")))
-       (tags-todo "-REFILE/!TODO|NEXT"
-                  ((org-agenda-overriding-header "Todo and Next Tasks"))))
+       (tags-todo "-PROJECT-STYLE=\"habit\"-REFILE/!TODO|NEXT"
+                  ((org-agenda-overriding-header "Todo and Next Tasks")))
+       (stuck ""
+              ((org-agenda-overriding-header "Stuck Projects"))))
       nil nil))))
  '(org-agenda-files (quote ("~/org")))
- '(org-agenda-restore-windows-after-quit t t)
+ '(org-agenda-restore-windows-after-quit t)
+ '(org-agenda-tags-todo-honor-ignore-options t)
+ '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
  '(org-capture-templates
    (quote
     (("s" "Snippet")
-     ("sy" "yasnippet" plain
-      (file capture-snippet-file)
-      "# -*- mode: snippet -*-
-# key: %^{key}
-# group: %^{snippet group|math}
-# name: %^{name}
-# --
-%?
-")
      ("sv" "Contents of selection" entry
       (file "~/org/refile.org")
       "* Snippet :snippet:
@@ -372,6 +379,10 @@ you should place your code here."
      ("i" "New in-list item" entry
       (file "~/org/in.org")
       "* TODO %^{Task}")
+     ("p" "Phone call" entry
+      (file "~/org/refile.org")
+      "* Phone Call %? :PHONE:
+%U" :clock-in t :clock-resume t)
      ("d" "Item to drill")
      ("df" "Miscellaneous facts" entry
       (file "~/org/facts.org")
@@ -385,14 +396,76 @@ you should place your code here."
 %^{Task}
 **** Shortcut
 %^{Shortcut}"))))
- '(org-modules
+ '(org-clock-in-switch-to-state "PROG")
+ '(org-drill-left-cloze-delimiter "{[")
+ '(org-drill-right-cloze-delimiter "]}")
+ '(org-format-latex-header
+   "\\documentclass{article}
+\\usepackage[usenames]{color}
+\\usepackage{fontspec}
+\\usepackage{graphicx}
+[PACKAGES]
+[DEFAULT-PACKAGES]
+\\pagestyle{empty}             % do not remove
+% The settings below are copied from fullpage.sty
+\\setlength{\\textwidth}{\\paperwidth}
+\\addtolength{\\textwidth}{-3cm}
+\\setlength{\\oddsidemargin}{1.5cm}
+\\addtolength{\\oddsidemargin}{-2.54cm}
+\\setlength{\\evensidemargin}{\\oddsidemargin}
+\\setlength{\\textheight}{\\paperheight}
+\\addtolength{\\textheight}{-\\headheight}
+\\addtolength{\\textheight}{-\\headsep}
+\\addtolength{\\textheight}{-\\footskip}
+\\addtolength{\\textheight}{-3cm}
+\\setlength{\\topmargin}{1.5cm}
+\\addtolength{\\topmargin}{-2.54cm}
+
+\\def\\rcurs{\\textrm{\\fontspec{Kaufmann}r}}
+\\def\\brcurs{\\textbf{\\fontspec{Kaufmann}r}}
+\\def\\hrcurs{\\hat{\\textbf{\\fontspec{Kaufmann}r}}}
+
+")
+ '(org-format-latex-options
    (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail org-w3m org-drill)))
+    (:foreground default :background default :scale 1.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-habit-show-habits-only-for-today t)
+ '(org-modules (quote (org-docview org-habit org-info org-drill)))
  '(org-preview-latex-default-process (quote dvisvgm))
+ '(org-preview-latex-process-alist
+   (quote
+    ((dvipng :programs
+             ("latex" "dvipng")
+             :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+             (1.0 . 1.0)
+             :latex-compiler
+             ("latex -interaction nonstopmode -output-directory %o %f")
+             :image-converter
+             ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
+     (dvisvgm :programs
+              ("xelatex" "dvisvgm")
+              :description "dvi > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+              (1.7 . 1.5)
+              :latex-compiler
+              ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+              :image-converter
+              ("dvisvgm %f -n -b min -c %S -o %O"))
+     (imagemagick :programs
+                  ("latex" "convert")
+                  :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                  (1.0 . 1.0)
+                  :latex-compiler
+                  ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                  :image-converter
+                  ("convert -density %D -trim -antialias %f -quality 100 %O")))))
  '(org-refile-targets
    (quote
     ((nil :maxlevel . 9)
      (org-agenda-files :maxlevel . 9))))
+ '(org-stuck-projects (quote ("+PROJECT" ("NEXT") nil "SCHEDULED")))
+ '(org-tag-alist (quote (("work" . 119) ("PROJECT" . 112) ("lizeth" . 108))))
+ '(org-tags-exclude-from-inheritance (quote ("PROJECT")))
  '(org-todo-keyword-faces
    (quote
     (("TODO" . "red")
