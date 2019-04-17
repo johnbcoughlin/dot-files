@@ -376,8 +376,8 @@ you should place your code here."
       (file "~/org/refile.org")
       "* Snippet :snippet:
 %i")
-     ("i" "New in-list item" entry
-      (file "~/org/in.org")
+     ("t" "New task" entry
+      (file "~/org/refile.org")
       "* TODO %^{Task}")
      ("p" "Phone call" entry
       (file "~/org/refile.org")
