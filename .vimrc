@@ -50,6 +50,15 @@ endif
 
 " keyboard shortcuts
 let mapleader = ','
+
+" Needed to make C-q remapping work in terminal
+silent !stty -ixon
+autocmd VimLeave * silent !stty ixon
+
+imap <C-q> <Esc>
+vmap <C-q> <Esc>
+
+noremap <C-q> <Esc>
 noremap <C-h> <C-w>h
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
