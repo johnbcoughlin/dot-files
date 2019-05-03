@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     html
+     ruby
      osx
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -320,13 +322,23 @@ you should place your code here."
   (spacemacs/set-leader-keys "o c d" 'org-cdlatex-mode)
   (spacemacs/set-leader-keys "o c i" 'org-agenda-clock-in)
   (spacemacs/set-leader-keys "o c o" 'org-agenda-clock-out)
+  (org-defkey org-mode-map [(meta return)] 'org-meta-return)
 
   ;; This is too easy to accidentally type
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
 
+  ;; Automatically support latex shortcuts in org mode
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
 
+  ;; Set automatic line breaks at 80 chars
+  (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+
+  ;; Alert menu bar app when clocking in and out
+  (add-hook 'org-clock-in-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" (concat "tell application \"org-clock-statusbar\" to clock in \"" (replace-regexp-in-string "\"" "\\\\\"" org-clock-current-task) "\""))))
+  (add-hook 'org-clock-out-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" "tell application \"org-clock-statusbar\" to clock out")))
+
+  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -349,6 +361,7 @@ you should place your code here."
     (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
      ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
  '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
+ '(fill-column 80)
  '(latex-run-command "xelatex")
  '(org-agenda-custom-commands
    (quote
@@ -366,14 +379,21 @@ you should place your code here."
        (stuck ""
               ((org-agenda-overriding-header "Stuck Projects"))))
       nil nil))))
- '(org-agenda-files (quote ("~/org")))
+ '(org-agenda-files (quote ("~/org" "~/org/square")))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
  '(org-capture-templates
    (quote
-    (("s" "Snippet")
+    (("j" "Journal" entry
+      (file+olp+datetree "~/org/diary.org")
+      "* %?\n%U\n" :clock-in t :clock-resume t)
+     ("m" "Meeting" entry
+      (file "~/org/refile.org")
+      "* MEETING with %? :MEETING: 
+%U" :clock-in t :clock-resume t)
+     ("s" "Snippet")
      ("sv" "Contents of selection" entry
       (file "~/org/refile.org")
       "* Snippet :snippet:
@@ -434,6 +454,7 @@ you should place your code here."
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-habit-show-habits-only-for-today t)
  '(org-modules (quote (org-docview org-habit org-info org-drill)))
+ '(org-outline-path-complete-in-steps nil)
  '(org-preview-latex-default-process (quote dvisvgm))
  '(org-preview-latex-process-alist
    (quote
@@ -461,11 +482,13 @@ you should place your code here."
                   ("pdflatex -interaction nonstopmode -output-directory %o %f")
                   :image-converter
                   ("convert -density %D -trim -antialias %f -quality 100 %O")))))
+ '(org-refile-allow-creating-parent-nodes (quote confirm))
  '(org-refile-targets
    (quote
     ((nil :maxlevel . 9)
      (org-agenda-files :maxlevel . 9))))
- '(org-stuck-projects (quote ("+PROJECT" ("NEXT") nil "SCHEDULED")))
+ '(org-refile-use-outline-path (quote file))
+ '(org-stuck-projects (quote ("+PROJECT/-DONE" ("NEXT" "PROG") nil "SCHEDULED")))
  '(org-tag-alist (quote (("work" . 119) ("PROJECT" . 112) ("lizeth" . 108))))
  '(org-tags-exclude-from-inheritance (quote ("PROJECT")))
  '(org-todo-keyword-faces
@@ -475,14 +498,17 @@ you should place your code here."
      ("PROG" . "cyan")
      ("DONE" . "green")
      ("WAIT" . "orange")
-     ("CANCELLED" . "grey"))))
+     ("CANCELLED" . "grey")
+     ("MEETING" . "purple"))))
  '(org-todo-keywords
    (quote
-    ((sequence "TODO(t)" "NEXT(n)" "PROG(p)" "DONE(d)")
-     (sequence "WAIT(w@/!)" "CANCELLED(c@/!)"))))
+    ((sequence "TODO(t)" "NEXT(n)" "PROG(p)" "|" "DONE(d)")
+     (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "MEETING(m)"))))
  '(package-selected-packages
    (quote
-    (fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy))))
+    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+ '(split-height-threshold 120)
+ '(split-width-threshold 100))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
