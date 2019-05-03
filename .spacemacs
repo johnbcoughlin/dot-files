@@ -325,6 +325,8 @@ you should place your code here."
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
 
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+
   )
 
 ;; Used in the agenda view to filter out certain tags
