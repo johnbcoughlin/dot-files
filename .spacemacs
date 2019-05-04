@@ -337,6 +337,12 @@ you should place your code here."
   ;; Alert menu bar app when clocking in and out
   (add-hook 'org-clock-in-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" (concat "tell application \"org-clock-statusbar\" to clock in \"" (replace-regexp-in-string "\"" "\\\\\"" org-clock-current-task) "\""))))
   (add-hook 'org-clock-out-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" "tell application \"org-clock-statusbar\" to clock out")))
+
+  (setq org-agenda-clock-consistency-checks
+        (quote (:max-duration "4:00"
+                              :min-duration 0
+                              :max-gap 0
+                              :gap-ok-around ("4:00"))))
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -361,6 +367,14 @@ you should place your code here."
  '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
  '(fill-column 80)
  '(latex-run-command "xelatex")
+ '(org-agenda-clock-consistency-checks
+   (quote
+    (:max-duration "10:00" :min-duration 0 :max-gap "0:05" :gap-ok-around
+                   ("4:00")
+                   :default-face
+                   ((:background "DarkRed")
+                    (:foreground "white"))
+                   :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil)))
  '(org-agenda-custom-commands
    (quote
     ((" " "Agenda"
@@ -375,7 +389,9 @@ you should place your code here."
        (tags-todo "-PROJECT-STYLE=\"habit\"-REFILE/!TODO|NEXT"
                   ((org-agenda-overriding-header "Todo and Next Tasks")))
        (stuck ""
-              ((org-agenda-overriding-header "Stuck Projects"))))
+              ((org-agenda-overriding-header "Stuck Projects")))
+       (todo "WAIT"
+             ((org-agenda-overriding-header "Blocked Tasks"))))
       nil nil))))
  '(org-agenda-files (quote ("~/org" "~/org/square")))
  '(org-agenda-restore-windows-after-quit t)
@@ -386,7 +402,9 @@ you should place your code here."
    (quote
     (("j" "Journal" entry
       (file+olp+datetree "~/org/diary.org")
-      "* %?\n%U\n" :clock-in t :clock-resume t)
+      "* %?
+%U
+" :clock-in t :clock-resume t)
      ("m" "Meeting" entry
       (file "~/org/refile.org")
       "* MEETING with %? :MEETING: 
