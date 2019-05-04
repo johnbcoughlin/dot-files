@@ -343,6 +343,7 @@ you should place your code here."
                               :min-duration 0
                               :max-gap 0
                               :gap-ok-around ("4:00"))))
+  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -407,7 +408,7 @@ you should place your code here."
 " :clock-in t :clock-resume t)
      ("m" "Meeting" entry
       (file "~/org/refile.org")
-      "* MEETING with %? :MEETING: 
+      "* MEETING with %? :MEETING:
 %U" :clock-in t :clock-resume t)
      ("s" "Snippet")
      ("sv" "Contents of selection" entry
