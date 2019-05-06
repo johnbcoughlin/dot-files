@@ -56,7 +56,9 @@ values."
      cdlatex
      latex
      rust
+     rustic
      org
+     anki-editor
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -339,6 +341,7 @@ you should place your code here."
   (add-hook 'org-clock-out-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" "tell application \"org-clock-statusbar\" to clock out")))
 
   (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+  (setq rustic-rls-pkg nil)
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -379,7 +382,9 @@ you should place your code here."
        (stuck ""
               ((org-agenda-overriding-header "Stuck Projects"))))
       nil nil))))
- '(org-agenda-files (quote ("~/org" "~/org/square")))
+ '(org-agenda-files
+   (quote
+    ("~/org/reading.org" "~/org/spanish.org" "/Users/jack/org/calc.org" "/Users/jack/org/diary.org" "/Users/jack/org/electrodynamics.org" "/Users/jack/org/emacs.org" "/Users/jack/org/facts.org" "/Users/jack/org/journal.org" "/Users/jack/org/notes.org" "/Users/jack/org/personal.org" "/Users/jack/org/phone.org" "/Users/jack/org/refile.org" "/Users/jack/org/work.org" "/Users/jack/org/workout.org")))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
@@ -388,7 +393,9 @@ you should place your code here."
    (quote
     (("j" "Journal" entry
       (file+olp+datetree "~/org/diary.org")
-      "* %?\n%U\n" :clock-in t :clock-resume t)
+      "* %?
+%U
+" :clock-in t :clock-resume t)
      ("m" "Meeting" entry
       (file "~/org/refile.org")
       "* MEETING with %? :MEETING: 
@@ -488,7 +495,11 @@ you should place your code here."
     ((nil :maxlevel . 9)
      (org-agenda-files :maxlevel . 9))))
  '(org-refile-use-outline-path (quote file))
- '(org-stuck-projects (quote ("+PROJECT/-DONE" ("NEXT" "PROG") nil "SCHEDULED")))
+ '(org-stuck-projects
+   (quote
+    ("+PROJECT/-DONE-CANCELLED"
+     ("NEXT" "PROG")
+     nil "SCHEDULED")))
  '(org-tag-alist (quote (("work" . 119) ("PROJECT" . 112) ("lizeth" . 108))))
  '(org-tags-exclude-from-inheritance (quote ("PROJECT")))
  '(org-todo-keyword-faces
@@ -506,7 +517,7 @@ you should place your code here."
      (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "MEETING(m)"))))
  '(package-selected-packages
    (quote
-    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+    (anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
  '(split-height-threshold 120)
  '(split-width-threshold 100))
 (custom-set-faces
