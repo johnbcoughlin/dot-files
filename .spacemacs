@@ -404,6 +404,7 @@ you should place your code here."
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (latex . t))))
  '(org-capture-templates
    (quote
     (("j" "Journal" entry
@@ -448,6 +449,7 @@ you should place your code here."
 \\usepackage[usenames]{color}
 \\usepackage{fontspec}
 \\usepackage{graphicx}
+\\usepackage{wrapfig}
 [PACKAGES]
 [DEFAULT-PACKAGES]
 \\pagestyle{empty}             % do not remove
@@ -475,6 +477,10 @@ you should place your code here."
     (:foreground default :background default :scale 1.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-habit-show-habits-only-for-today t)
+ '(org-latex-compiler "xelatex")
+ '(org-latex-pdf-process
+   (quote
+    ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
  '(org-modules (quote (org-docview org-habit org-info org-drill)))
  '(org-outline-path-complete-in-steps nil)
  '(org-preview-latex-default-process (quote dvisvgm))
