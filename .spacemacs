@@ -56,9 +56,7 @@ values."
      cdlatex
      latex
      rust
-     rustic
      org
-     anki-editor
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -345,8 +343,6 @@ you should place your code here."
                               :min-duration 0
                               :max-gap 0
                               :gap-ok-around ("4:00"))))
-  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
-  (setq rustic-rls-pkg nil)
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -379,6 +375,7 @@ you should place your code here."
                    ((:background "DarkRed")
                     (:foreground "white"))
                    :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil)))
+ '(org-agenda-clockreport-parameter-plist (quote (:link t :maxlevel 4)))
  '(org-agenda-custom-commands
    (quote
     ((" " "Agenda"
@@ -397,9 +394,7 @@ you should place your code here."
        (todo "WAIT"
              ((org-agenda-overriding-header "Blocked Tasks"))))
       nil nil))))
- '(org-agenda-files
-   (quote
-    ("~/org/reading.org" "~/org/spanish.org" "/Users/jack/org/calc.org" "/Users/jack/org/diary.org" "/Users/jack/org/electrodynamics.org" "/Users/jack/org/emacs.org" "/Users/jack/org/facts.org" "/Users/jack/org/journal.org" "/Users/jack/org/notes.org" "/Users/jack/org/personal.org" "/Users/jack/org/phone.org" "/Users/jack/org/refile.org" "/Users/jack/org/work.org" "/Users/jack/org/workout.org")))
+ '(org-agenda-files (quote ("~/org")))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
@@ -410,11 +405,10 @@ you should place your code here."
       (file+olp+datetree "~/org/diary.org")
       "* %?
 %U
-" :clock-in t :clock-resume t)
+" :jump-to-captured t :clock-in t :clock-resume t)
      ("m" "Meeting" entry
       (file "~/org/refile.org")
-      "* MEETING with %? :MEETING:
-%U" :clock-in t :clock-resume t)
+      "* MEETING with %? :MEETING:")
      ("s" "Snippet")
      ("sv" "Contents of selection" entry
       (file "~/org/refile.org")
@@ -422,7 +416,7 @@ you should place your code here."
 %i")
      ("t" "New task" entry
       (file "~/org/refile.org")
-      "* TODO %^{Task}")
+      "* TODO %^{Task}" :clock-in t :clock-resume t)
      ("p" "Phone call" entry
       (file "~/org/refile.org")
       "* Phone Call %? :PHONE:
@@ -529,7 +523,7 @@ you should place your code here."
  '(org-todo-keywords
    (quote
     ((sequence "TODO(t)" "NEXT(n)" "PROG(p)" "|" "DONE(d)")
-     (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "MEETING(m)"))))
+     (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
  '(package-selected-packages
    (quote
     (anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
