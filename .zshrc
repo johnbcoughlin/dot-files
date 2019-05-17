@@ -28,3 +28,9 @@ source ~/.cargo/env
 
 
 source ~/.zshrc.local
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jack/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jack/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jack/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jack/google-cloud-sdk/completion.zsh.inc'; fi
