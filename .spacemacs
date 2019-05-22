@@ -328,6 +328,11 @@ you should place your code here."
 
 ;;;; Keybindings
 
+  ;; Set up rust module
+  (add-to-list 'load-path "~/src/hypertex/target/debug")
+  (require 'hypertex)
+
+
 
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
@@ -356,7 +361,8 @@ you should place your code here."
                               :gap-ok-around ("4:00"))))
   (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
   (setq rustic-rls-pkg nil)
-  (setq debug-on-message "Buffer is read-only")
+  (setq debug-on-message "Bad keyword argument")
+  (setq org-element-use-cache t)
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -452,33 +458,7 @@ you should place your code here."
  '(org-clock-in-switch-to-state "PROG")
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
- '(org-format-latex-header
-   "\\documentclass{article}
-\\usepackage[usenames]{color}
-\\usepackage{fontspec}
-\\usepackage{graphicx}
-\\usepackage{wrapfig}
-[PACKAGES]
-[DEFAULT-PACKAGES]
-\\pagestyle{empty}             % do not remove
-% The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-
-\\def\\rcurs{\\textrm{\\fontspec{Kaufmann}r}}
-\\def\\brcurs{\\textbf{\\fontspec{Kaufmann}r}}
-\\def\\hrcurs{\\hat{\\textbf{\\fontspec{Kaufmann}r}}}
-
+ '(org-format-latex-header "%&~/.emacs.d/private/header
 ")
  '(org-format-latex-options
    (quote
@@ -504,10 +484,10 @@ you should place your code here."
              ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
      (dvisvgm :programs
               ("xelatex" "dvisvgm")
-              :description "dvi > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+              :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
               (1.7 . 1.5)
               :latex-compiler
-              ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+              ("xelatex -no-pdf -interaction batchmode -output-directory %o %f")
               :image-converter
               ("dvisvgm %f -n -b min -c %S -o %O"))
      (imagemagick :programs
