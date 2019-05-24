@@ -33,6 +33,7 @@ values."
    '(
      html
      ruby
+     python
      osx
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -57,6 +58,9 @@ values."
      latex
      rust
      org
+     org-clock-convenience
+     ;define-word
+     spacemacs-language
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -327,9 +331,6 @@ you should place your code here."
   ;; This is too easy to accidentally type
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil)
 
-  ;; Automatically support latex shortcuts in org mode
-  (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-
   ;; Set automatic line breaks at 80 chars
   (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
@@ -343,6 +344,43 @@ you should place your code here."
                               :min-duration 0
                               :max-gap 0
                               :gap-ok-around ("4:00"))))
+
+  (defun my/org-agenda-mode-fn ()
+    (define-key org-agenda-mode-map
+      (kbd "<S-up>") #'org-clock-convenience-timestamp-up)
+    (define-key org-agenda-mode-map
+      (kbd "<S-down>") #'org-clock-convenience-timestamp-down)
+    (define-key org-agenda-mode-map
+      (kbd "<S-2>") #'org-clock-convenience-fill-gap)
+    (define-key org-agenda-mode-map
+      (kbd "<S-3>") #'org-clock-convenience-fill-gap-both))
+  (add-hook 'org-agenda-mode-hook #'my/org-agenda-mode-fn)
+
+  ;(setq global-disable-point-adjustment t)
+  (setq org-archive-mark-done nil)
+  (setq org-archive-location "%s_archive::* Archived Tasks")
+  (defun my/skip-non-archivable-tasks ()
+  "Skip trees that are not available for archiving"
+  (save-restriction
+    (widen)
+    ;; Consider only tasks with done todo headings as archivable candidates
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+          (subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (member (org-get-todo-state) org-todo-keywords-1)
+          (if (member (org-get-todo-state) org-done-keywords)
+              (let* ((daynr (string-to-number (format-time-string "%d" (current-time))))
+                     (a-month-ago (* 60 60 24 (+ daynr 1)))
+                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
+                     (this-month (format-time-string "%Y-%m-" (current-time)))
+                     (subtree-is-current (save-excursion
+                                           (forward-line 1)
+                                           (and (< (point) subtree-end)
+                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
+                (if subtree-is-current
+                    subtree-end ; Has a date in this month or last month, skip it
+                  nil))  ; available to archive
+            (or subtree-end (point-max)))
+        next-headline))))
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -378,72 +416,119 @@ you should place your code here."
  '(org-agenda-clockreport-parameter-plist (quote (:link t :maxlevel 4)))
  '(org-agenda-custom-commands
    (quote
-    ((" " "Agenda"
+    (("1" "Tasks to archive" tags "-REFILE/"
+      ((org-agenda-match-list-sublevels nil)
+       (org-agenda-skip-function
+        (quote my/skip-non-archivable-tasks))))
+     (" " "Agenda"
       ((agenda ""
-               ((org-agenda-skip-function
+               ((org-agenda-span
+                 (quote day))
+                (org-agenda-skip-function
                  (quote
                   (my-skip-tag "drill")))))
-       (todo "PROG"
-             ((org-agenda-overriding-header "Currently in Progress")))
        (tags "REFILE"
              ((org-agenda-overriding-header "Tasks to Refile")))
-       (tags-todo "-PROJECT-STYLE=\"habit\"-REFILE/!TODO|NEXT"
+       (todo "NEXT"
+             ((org-agenda-overriding-header "Next Tasks")))
+       (tags-todo "-PROJECT-STYLE=\"habit\"-REFILE/!TODO"
                   ((org-agenda-overriding-header "Todo and Next Tasks")))
-       (stuck ""
-              ((org-agenda-overriding-header "Stuck Projects")))
        (todo "WAIT"
              ((org-agenda-overriding-header "Blocked Tasks"))))
       nil nil))))
- '(org-agenda-files (quote ("~/org")))
+ '(org-agenda-files (quote ("/ssh:emacs-node:/home/jack/org")))
+ '(org-agenda-prefix-format
+   (quote
+    ((agenda . " %i %-12:c%?-12t% s")
+     (todo . " %i %-12:c ")
+     (tags . " %i %-12:c ")
+     (search . " %i %-12:c "))))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
- '(org-babel-load-languages (quote ((emacs-lisp . t) (latex . t))))
  '(org-capture-templates
    (quote
     (("j" "Journal" entry
-      (file+olp+datetree "~/org/diary.org")
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
       "* %?
 %U
 " :jump-to-captured t :clock-in t :clock-resume t)
-     ("m" "Meeting" entry
-      (file "~/org/refile.org")
-      "* MEETING with %? :MEETING:")
+     ("m" "Meeting")
+     ("mm" "Meeting" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* MEETING with %? :MEETING:
+<%(org-read-date)>")
+     ("ms" "Standup" entry
+      (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Standups")
+      "* MEETING %u :MEETING:standup:
+%T" :clock-in t :clock-resume t)
+     ("mi" "Interview" entry
+      (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Interviews")
+      "** MEETING with %^{Candidate} :MEETING:interview:
+<%(org-read-date)>
+*** Notes
+*** TODO Feedback
+DEADLINE: <%(org-read-date nil nil org-read-date-final-answer)>")
      ("s" "Snippet")
      ("sv" "Contents of selection" entry
-      (file "~/org/refile.org")
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
       "* Snippet :snippet:
 %i")
      ("t" "New task" entry
-      (file "~/org/refile.org")
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
       "* TODO %^{Task}" :clock-in t :clock-resume t)
      ("p" "Phone call" entry
-      (file "~/org/refile.org")
-      "* Phone Call %? :PHONE:
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* PHONE call with %? :PHONE:
 %U" :clock-in t :clock-resume t)
      ("d" "Item to drill")
      ("df" "Miscellaneous facts" entry
-      (file "~/org/facts.org")
+      (file "/ssh:emacs-node:/home/jack/org/facts.org")
       "*** Fact :drill:
 %^{Fact}
 **** Answer
 %^{Answer}")
      ("dk" "New key binding" entry
-      (file+olp "~/org/emacs.org" "Key Bindings")
+      (file+olp "/ssh:emacs-node:/home/jack/org/emacs.org" "Key Bindings")
       "*** Task :drill:
 %^{Task}
 **** Shortcut
-%^{Shortcut}"))))
- '(org-clock-in-switch-to-state "PROG")
+%^{Shortcut}")
+     ("-" "JIRA Ticket" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* TODO %^{Ticket ID}
+[[https://jira.sqcorp.co/browse/%\\1][%\\1]]"))))
+ '(org-clock-in-switch-to-state
+   (lambda
+     (state)
+     (cond
+      ((member state
+               (quote
+                ("TODO" "DONE" "CANCELLED" "WAIT" "NEXT")))
+       "NEXT")
+      ((member state
+               (quote
+                ("MEETING" "PHONE")))
+       state))))
+ '(org-clock-out-remove-zero-time-clocks t)
+ '(org-clocktable-defaults
+   (quote
+    (:maxlevel 2 :lang "en" :scope file :block nil :wstart 1 :mstart 1 :tstart nil :tend nil :step nil :stepskip0 nil :fileskip0 on :tags nil :match nil :emphasize nil :link nil :narrow 40! :indent t :formula nil :timestamp nil :level nil :tcolumns nil :formatter nil)))
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
+ '(org-export-dispatch-use-expert-ui nil)
+ '(org-export-headline-levels 4)
+ '(org-export-with-section-numbers nil)
+ '(org-export-with-sub-superscripts (quote {}))
+ '(org-export-with-tags nil)
+ '(org-export-with-tasks nil)
+ '(org-export-with-toc nil)
  '(org-format-latex-header
    "\\documentclass{article}
 \\usepackage[usenames]{color}
 \\usepackage{fontspec}
 \\usepackage{graphicx}
-\\usepackage{wrapfig}
 [PACKAGES]
 [DEFAULT-PACKAGES]
 \\pagestyle{empty}             % do not remove
@@ -471,11 +556,12 @@ you should place your code here."
     (:foreground default :background default :scale 1.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-habit-show-habits-only-for-today t)
- '(org-latex-compiler "xelatex")
- '(org-latex-pdf-process
-   (quote
-    ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
  '(org-modules (quote (org-docview org-habit org-info org-drill)))
+ '(org-odt-convert-processes
+   (quote
+    (("LibreOffice" "/Applications/LibreOffice.app/Contents/MacOS/soffice --headless --convert-to %f%x --outdir %d %i")
+     ("unoconv" "unoconv -f %f -o %d %i"))))
+ '(org-odt-preferred-output-format "docx")
  '(org-outline-path-complete-in-steps nil)
  '(org-preview-latex-default-process (quote dvisvgm))
  '(org-preview-latex-process-alist
@@ -529,10 +615,10 @@ you should place your code here."
  '(org-todo-keywords
    (quote
     ((sequence "TODO(t)" "NEXT(n)" "PROG(p)" "|" "DONE(d)")
-     (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+     (sequence "WAIT(w@/!)" "|" "CANCELLED(c@/!)" "|" "DELEGATED(g@/!)" "PHONE" "MEETING"))))
  '(package-selected-packages
    (quote
-    (anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+    (yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional cython-mode anaconda-mode pythonic org-clock-convenience anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
  '(split-height-threshold 120)
  '(split-width-threshold 100))
 (custom-set-faces
