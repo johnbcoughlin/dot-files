@@ -2,7 +2,54 @@
 (require 'evil-common)
 (require 'latex)
 (require 'tex)
-(require 'hypertex)
+;(require 'libhypertex)
+
+(defvar hypertex-latex-preamble
+  "
+\documentclass{article}
+\usepackage[usenames]{color}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{grffile}
+% Package longtable omitted
+% Package wrapfig omitted
+% Package rotating omitted
+% Package capt-of omitted
+% Package hyperref omitted
+\pagestyle{empty}             % do not remove
+% The settings below are copied from fullpage.sty
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-3cm}
+\setlength{\oddsidemargin}{1.5cm}
+\addtolength{\oddsidemargin}{-2.54cm}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-\headheight}
+\addtolength{\textheight}{-\headsep}
+\addtolength{\textheight}{-\footskip}
+\addtolength{\textheight}{-3cm}
+\setlength{\topmargin}{1.5cm}
+\addtolength{\topmargin}{-2.54cm}
+
+\usepackage{rcurs}
+
+% Set up highlighting for simulating the cursor
+\usepackage{xcolor}
+\usepackage{soul}
+\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+")
+
+(defvar hypertex-latex-command-line
+  "xelatex -no-pdf")
+
+;; Set up the renderer
+;(setq libhypertex-renderer
+      ;(libhypertex-))
 
 (define-minor-mode hypertex-mode
   "Toggle HyperLaTeX mode."
@@ -93,7 +140,6 @@
       nil)))
 
 (evil-define-motion evil-hypertex-atom-forward (count &optional crosslines noerror)
-
   (hypertex-motion-wrapper
    (lambda ()
      (hypertex--combined-motion-loop

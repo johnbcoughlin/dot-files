@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2019.5.16)  19 MAY 2019 13:48
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019) (preloaded format=xelatex 2019.5.16)  23 MAY 2019 09:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -308,7 +308,7 @@ Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@ulht=\dimen121
 ))
 Beginning to dump on file header.fmt
- (preloaded format=header 2019.5.19)
+ (preloaded format=header 2019.5.23)
 74454 strings of total length 128296
 103038 memory locations dumped; current usage is 374&101380
 7276 multiletter control sequences

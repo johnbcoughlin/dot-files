@@ -59,6 +59,7 @@ values."
      latex
      rust
      org
+     ;hypertex
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -326,14 +327,12 @@ you should place your code here."
 
 ;;;; Keybindings
 
-  ;; Set up rust module
-  (add-to-list 'load-path "~/src/hypertex/target/debug")
-  (require 'hypertex)
-
-
 
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
+
+  (add-to-list 'load-path "~/.emacs.d/private/hypertex/local/libhypertex")
+  (require 'libhypertex)
 
   (org-defkey org-mode-map [(meta return)] 'org-meta-return)
 
