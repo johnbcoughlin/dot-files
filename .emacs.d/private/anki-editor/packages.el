@@ -1,12 +1,8 @@
-;;; packages.el --- cdlatex layer packages file for Spacemacs.
+;;; packages.el --- anki-editor layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
-<<<<<<< HEAD
-;; Author: Jack Coughlin <johnbc@johnbc-htd7.local>
-=======
 ;; Author: Jack Coughlin <jack@Jacks-MacBook-Pro.local>
->>>>>>> b2d456b68b7f7395bc898ef0b7b4213adea52541
 ;; URL: https://github.com/syl20bnr/spacemacs
 ;;
 ;; This file is not part of GNU Emacs.
@@ -22,20 +18,21 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `cdlatex-packages'. Then, for each package PACKAGE:
+;; added to `anki-editor-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `cdlatex/init-PACKAGE' to load and initialize the package.
+;;   function `anki-editor/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `cdlatex/pre-init-PACKAGE' and/or
-;;   `cdlatex/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `anki-editor/pre-init-PACKAGE' and/or
+;;   `anki-editor/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
-(defconst cdlatex-packages
-  '(cdlatex)
-  "The list of Lisp packages required by the cdlatex layer.
+(defconst anki-editor-packages
+  '(anki-editor)
+  "The list of Lisp packages required by the anki-editor layer.
+
 
 Each entry is either:
 
@@ -62,13 +59,8 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-<<<<<<< HEAD
 
-(defun cdlatex/init-cdlatex ()
-    (use-package cdlatex))
-
-=======
-(defun cdlatex/init-cdlatex () (use-package cdlatex))
->>>>>>> b2d456b68b7f7395bc898ef0b7b4213adea52541
+(defun anki-editor/init-anki-editor ()
+  (use-package anki-editor))
 
 ;;; packages.el ends here

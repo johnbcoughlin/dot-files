@@ -2,6 +2,8 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+;;; Layers
+
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -61,12 +63,13 @@ values."
      org-clock-convenience
      ;define-word
      spacemacs-language
+     hypertex
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(dash-functional)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -79,6 +82,8 @@ values."
    ;; them if they become unused. `all' installs *all* packages supported by
    ;; Spacemacs and never uninstall them. (default is `used-only')
    dotspacemacs-install-packages 'used-only))
+
+;;; Dotspacemacs
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -271,7 +276,7 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -305,6 +310,8 @@ values."
    dotspacemacs-whitespace-cleanup nil
    ))
 
+;;; User
+
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
@@ -321,11 +328,22 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+;;;; Keybindings
+  (projectile-mode -1)
+  (setq remote-file-name-inhibit-cache nil)
+  (setq vc-ignore-dir-regexp
+        (format "%s\\|%s"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp))
+  (setq tramp-verbose 1)
+
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
-  (spacemacs/set-leader-keys "o c d" 'org-cdlatex-mode)
-  (spacemacs/set-leader-keys "o c i" 'org-agenda-clock-in)
-  (spacemacs/set-leader-keys "o c o" 'org-agenda-clock-out)
+
+  ;(add-to-list 'load-path "~/.emacs.d/private/hypertex/local/libhypertex")
+  ;(require 'libhypertex)
+
   (org-defkey org-mode-map [(meta return)] 'org-meta-return)
 
   ;; This is too easy to accidentally type
@@ -334,6 +352,7 @@ you should place your code here."
   ;; Set automatic line breaks at 80 chars
   (add-hook 'org-mode-hook '(lambda () (setq fill-column 80)))
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'rust-mode-hook '(lambda () (setq outline-regexp "[ ]*// [*]\\{1,8\\} ")))
 
   ;; Alert menu bar app when clocking in and out
   (add-hook 'org-clock-in-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" (concat "tell application \"org-clock-statusbar\" to clock in \"" (replace-regexp-in-string "\"" "\\\\\"" org-clock-current-task) "\""))))
@@ -381,6 +400,8 @@ you should place your code here."
                   nil))  ; available to archive
             (or subtree-end (point-max)))
         next-headline))))
+  (setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
+  (setq rustic-rls-pkg nil)
   )
 
 ;; Used in the agenda view to filter out certain tags
@@ -437,12 +458,6 @@ you should place your code here."
              ((org-agenda-overriding-header "Blocked Tasks"))))
       nil nil))))
  '(org-agenda-files (quote ("/ssh:emacs-node:/home/jack/org")))
- '(org-agenda-prefix-format
-   (quote
-    ((agenda . " %i %-12:c%?-12t% s")
-     (todo . " %i %-12:c ")
-     (tags . " %i %-12:c ")
-     (search . " %i %-12:c "))))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
@@ -524,32 +539,7 @@ DEADLINE: <%(org-read-date nil nil org-read-date-final-answer)>")
  '(org-export-with-tags nil)
  '(org-export-with-tasks nil)
  '(org-export-with-toc nil)
- '(org-format-latex-header
-   "\\documentclass{article}
-\\usepackage[usenames]{color}
-\\usepackage{fontspec}
-\\usepackage{graphicx}
-[PACKAGES]
-[DEFAULT-PACKAGES]
-\\pagestyle{empty}             % do not remove
-% The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-
-\\def\\rcurs{\\textrm{\\fontspec{Kaufmann}r}}
-\\def\\brcurs{\\textbf{\\fontspec{Kaufmann}r}}
-\\def\\hrcurs{\\hat{\\textbf{\\fontspec{Kaufmann}r}}}
-
+ '(org-format-latex-header "%&~/.emacs.d/private/header
 ")
  '(org-format-latex-options
    (quote
@@ -576,10 +566,10 @@ DEADLINE: <%(org-read-date nil nil org-read-date-final-answer)>")
              ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
      (dvisvgm :programs
               ("xelatex" "dvisvgm")
-              :description "dvi > svg" :message "you need to install the programs: xelatex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+              :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
               (1.7 . 1.5)
               :latex-compiler
-              ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+              ("xelatex -no-pdf -interaction batchmode -output-directory %o %f")
               :image-converter
               ("dvisvgm %f -n -b min -c %S -o %O"))
      (imagemagick :programs
