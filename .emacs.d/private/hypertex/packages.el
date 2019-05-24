@@ -30,9 +30,8 @@
 ;;; Code:
 
 (defconst hypertex-packages
-  '(libhypertex
-    (hypertex :location local)
-    )
+  '((libhypertex :location local)
+    (hypertex :location local))
   "The list of Lisp packages required by the hypertex layer.
 
 Each entry is either:
@@ -62,11 +61,11 @@ Each entry is either:
 
 (defun hypertex/init-libhypertex ()
   (use-package libhypertex
-    :load-path "~/.emacs.d/private/hypertex/local/hypertex"
     :demand t))
 
 (defun hypertex/init-hypertex ()
   (use-package hypertex
+    :load-path "~/.emacs.d/private/hypertex/local/libhypertex"
     :demand t))
 
 ;;; packages.el ends here

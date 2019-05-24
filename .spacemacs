@@ -59,7 +59,7 @@ values."
      latex
      rust
      org
-     ;hypertex
+     hypertex
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -326,13 +326,19 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
 ;;;; Keybindings
-
+  (projectile-mode -1)
+  (setq remote-file-name-inhibit-cache nil)
+  (setq vc-ignore-dir-regexp
+        (format "%s\\|%s"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp))
+  (setq tramp-verbose 1)
 
   (global-set-key (kbd "C-q") 'evil-escape)
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
 
-  (add-to-list 'load-path "~/.emacs.d/private/hypertex/local/libhypertex")
-  (require 'libhypertex)
+  ;(add-to-list 'load-path "~/.emacs.d/private/hypertex/local/libhypertex")
+  ;(require 'libhypertex)
 
   (org-defkey org-mode-map [(meta return)] 'org-meta-return)
 
