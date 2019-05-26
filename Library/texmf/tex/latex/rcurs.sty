@@ -1,12 +1,10 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{rcurs}[Package for the famous cursive r from Griffiths]
 
-\RequirePackage{fontspec}
-
 \ProcessOptions\relax
 
-\def\rcurs{\textrm{\fontspec{Kaufmann}r}}
-\def\brcurs{\textbf{\fontspec{Kaufmann}r}}
-\def\hrcurs{\hat{\textbf{\fontspec{Kaufmann}r}}}
+\def\rcurs{{\mbox{$\resizebox{.09in}{.08in}{\includegraphics[trim= 1em 0 14em 0,clip]{/Users/jack/tex-contrib/ScriptRPs}}$}}}
+\def\brcurs{{\mbox{$\resizebox{.09in}{.08in}{\includegraphics[trim= 1em 0 14em 0,clip]{/Users/jack/tex-contrib/BoldRPs}}$}}}
+
 
 \endinput

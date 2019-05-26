@@ -1,6 +1,5 @@
-% To compile: xelatex -ini -jobname="header" "&xelatex header.tex\dump"
+% To compile: latex -ini -jobname="header" "&latex header.tex\dump"
 
-\RequirePackage[OT1]{fontenc}
 \documentclass{article}
 \usepackage[usenames]{color}
 \usepackage[normalem]{ulem}
@@ -33,5 +32,20 @@
 
 % Set up highlighting for simulating the cursor
 \usepackage{xcolor}
+%\setlength{\fboxsep}{0pt}
 \usepackage{soul}
-\newcommand{\mathcolorbox}[2]{\colorbox{#1}{$\displaystyle #2$}}
+\usepackage{adjustbox}
+
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \textcolor#1{#2}#3%
+  \endgroup
+}
+\makeatother
+
+%\newcommand{\mathcolorbox}[2]{\adjustbox{bgcolor=#1}{$\displaystyle #2$}}
+%\newcommand{\cursor}[1]{\adjustbox{}}
+

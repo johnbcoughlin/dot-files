@@ -6,18 +6,14 @@
 
 (defvar hypertex-latex-preamble
   "
-\\usepackage{rcurs}
-\\definecolor{fg}{rgb}{ fg }
-\\definecolor{bg}{rgb}{ bg }
-\\pagecolor{bg}{\\color{fg}}
 ")
 
-(defvar hypertex-latex-command-line
-  "xelatex -no-pdf")
-
 ;; Set up the renderer
-(setq libhypertex-renderer
-      (libhypertex-start-renderer hypertex-latex-preamble 1))
+(defun hypertex-renderer-start ()
+  (setq libhypertex-renderer
+        (libhypertex-start-renderer
+         hypertex-latex-preamble
+         1)))
 
 (define-minor-mode hypertex-mode
   "Toggle HyperLaTeX mode."
@@ -27,12 +23,13 @@
   (if hypertex-mode
       (progn
         ;(add-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
-        ;(add-hook 'post-command-hook 'hypertex-rerender-at-point)
-        ;(add-hook 'post-self-insert-hook 'hypertex-rerender-at-point)
+        (add-hook 'post-command-hook 'hypertex--postcommand)
+        (add-hook 'post-self-insert-hook 'hypertex--testtest)
+        (hypertex-renderer-start)
         )
-    ;(remove-hook 'post-command-hook 'hypertex-rerender-at-point)
+    (remove-hook 'post-command-hook 'hypertex--postcommand)
     ;(remove-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
-    ;(remove-hook 'post-self-insert-hook 'hypertex-rerender-at-point)
+    (remove-hook 'post-self-insert-hook 'hypertex--testtest)
     ))
 
 (defun hypertex-clear-overlay-at-point ()
@@ -40,14 +37,29 @@
          (ov (if ovs (car ovs) nil)))
     (if ov (delete-overlay ov) ())))
 
+(defun hypertex--postcommand ()
+  (progn
+    (hypertex--testtest)
+    ))
+
 (defun hypertex--testtest ()
-  (let* ((frag (hypertex-latex-fragment-at-point))
-        (ov (hypertex--get-or-create-overlay frag)))
-    (hypertex--render-overlay frag ov)))
+  (let ((frag (hypertex-latex-fragment-at-point)))
+    (if frag
+        (let ((ov (hypertex--get-or-create-overlay frag)))
+          (if ov
+              (progn
+                (message "doing the thing")
+                (hypertex--render-overlay frag ov))
+            ()))
+      ())))
+
 
 (defun hypertex--get-or-create-overlay (frag)
   (let* ((beg (org-element-property :begin frag))
-         (end (org-element-property :end frag))
+         (end (save-excursion
+                (goto-char (org-element-property :end frag))
+                (skip-chars-backward " \r\t\n")
+                (point)))
          (overlays (cl-remove-if-not
                     (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
                     (overlays-in beg end)))
@@ -60,30 +72,38 @@
                ov)))))
 
 (defun hypertex--render-overlay (frag ov)
-  (let* ((img-file (hypertex--overlay-image-file ov))
-         (tex (org-element-property :value frag))
-         (tex (hypertex--set-colors tex)))
-    (progn
-      (libhypertex-render-tex libhypertex-renderer (point) (mark) tex img-file)
-      (overlay-put ov
-                   'display
-                   (list 'image :type 'svg :file img-file :ascent 'center)))))
+  (let* ((tex (org-element-property :value frag))
+         (fg (hypertex-latex-color :foreground))
+         )
+    (let ((img-file
+           (libhypertex-render-tex
+            libhypertex-renderer
+            fg
+            (hypertex--marker-within-frag (point) frag)
+            (hypertex--marker-within-frag (mark) frag)
+            tex
+            "/Users/jack/org/ltximg"
+            (symbol-name evil-state))))
+      (progn
+        (overlay-put ov
+                     'display
+                     (list 'image
+                           :type 'imagemagick
+                           :file img-file
+                           :ascent 'center
+                           :scale 0.24
+                           ))
+        (setq disable-point-adjustment t)))))
 
-(defun hypertex--set-colors (tex)
-  (let* ((fg (face-attribute (face-at-point) :foreground nil 'default))
-         (bg (face-attribute (face-at-point) :background nil 'default)))
-    (progn
-      (message "%s" fg)
-      (format "\n
-\\definecolor{fg}{rgb}{%s}\n
-\\definecolor{bg}{rgb}{%s}\n
-\\pagecolor{bg}\n
-{\\color{fg}\n
-%s
-\n}\n"
-              (org-latex-color-format fg)
-              (org-latex-color :background)
-              tex))))
+(defun hypertex-latex-color (attr)
+  "Return a RGB color for the LaTeX color package."
+  (hypertex-latex-color-format (face-attribute 'default attr nil)))
+
+(defun hypertex-latex-color-format (color-name)
+  "Convert COLOR-NAME to a RGB color value."
+  (apply #'format "rgb %s %s %s"
+         (mapcar 'org-normalize-color
+                 (color-values color-name))))
 
 (defun hypertex--overlay-image-file (ov)
   (let* ((id (overlay-get ov 'hypertex-overlay-id))
@@ -92,7 +112,7 @@
                   temporary-file-directory
                   default-directory))
          (dir (concat parent-dir org-preview-latex-image-directory))
-         (img_file (concat dir (format "org-ltximg_%s.svg" id))))
+         (img_file (concat dir (format "org-ltximg_%s.png" id))))
     img_file))
 
 (defun hypertex-latex-fragment-at-point ()
@@ -139,7 +159,7 @@
     (if frag
         (let* ((tex (org-element-property :value frag))
                (begin (org-element-property :begin frag))
-               (pt (- (point) begin))
+               (pt (hypertex--marker-within-frag (point) frag))
                (atom (libhypertex-select-atoms pt count tex))
                )
           (if atom (let ((beg (+ (car atom) begin)))
@@ -147,7 +167,15 @@
             nil))
       nil)))
 
+(defun hypertex--marker-within-frag (marker frag)
+  (if marker
+      (let* ((begin (org-element-property :begin frag))
+             (pt (- marker begin)))
+        pt)
+    nil))
+
 (evil-define-motion evil-hypertex-atom-forward (count &optional crosslines noerror)
+  (interactive)
   (hypertex-motion-wrapper
    (lambda ()
      (hypertex--combined-motion-loop
@@ -157,6 +185,7 @@
 
 (evil-define-motion evil-hypertex-atom-backward (count &optional crosslines noerror)
   "Move forward by COUNT symbols, as they appear in the rendered LaTeX equation"
+  (interactive)
   (hypertex-motion-wrapper
    (lambda ()
      (hypertex--combined-motion-loop

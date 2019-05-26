@@ -30,7 +30,9 @@
 ;;; Code:
 
 (defconst hypertex-packages
-  '((libhypertex :location local)
+  '((posframe)
+    (libhypertex :location local)
+    (webkit-katex-render :location local)
     (hypertex :location local))
   "The list of Lisp packages required by the hypertex layer.
 
@@ -58,6 +60,13 @@ Each entry is either:
 
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
+
+
+(defun hypertex/init-posframe ()
+  (use-package posframe))
+
+(defun hypertex/init-webkit-katex-render ()
+  (use-package webkit-katex-render))
 
 (defun hypertex/init-libhypertex ()
   (use-package libhypertex
