@@ -6,42 +6,10 @@
 
 (defvar hypertex-latex-preamble
   "
-\\documentclass{article}
-\\usepackage[usenames]{color}
-\\usepackage[normalem]{ulem}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\usepackage{textcomp}
-\\usepackage{graphicx}
-\\usepackage{wrapfig}
-\\usepackage{graphicx}
-\\usepackage{grffile}
-% Package longtable omitted
-% Package wrapfig omitted
-% Package rotating omitted
-% Package capt-of omitted
-% Package hyperref omitted
-\\pagestyle{empty}             % do not remove
-% The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-
 \\usepackage{rcurs}
-
-% Set up highlighting for simulating the cursor
-\\usepackage{xcolor}
-\\usepackage{soul}
-\\newcommand{\\mathcolorbox}[2]{\\colorbox{#1}{$\\displaystyle #2$}}
+\\definecolor{fg}{rgb}{ fg }
+\\definecolor{bg}{rgb}{ bg }
+\\pagecolor{bg}{\\color{fg}}
 ")
 
 (defvar hypertex-latex-command-line
@@ -49,7 +17,7 @@
 
 ;; Set up the renderer
 (setq libhypertex-renderer
-      (libhypertex-start-renderer hypertex-latex-preamble 10))
+      (libhypertex-start-renderer hypertex-latex-preamble 1))
 
 (define-minor-mode hypertex-mode
   "Toggle HyperLaTeX mode."
@@ -72,33 +40,19 @@
          (ov (if ovs (car ovs) nil)))
     (if ov (delete-overlay ov) ())))
 
-(defun hypertex-rerender-at-point ()
-  (let ((frag (hypertex-latex-fragment-at-point)))
-    (if frag
-        (let* ((ov (hypertex--org-latex-overlay-at-point))
-               (overlay (if ov
-                            ov
-                          (progn
-                            (hypertex--org-latex-overlay-at-point)))))
-          (progn
-            (message "creating new overlay")
-            (hypertex--create-or-get-overlay frag)
-            (message "rerendered"))
-          ()))))
-
 (defun hypertex--testtest ()
   (let* ((frag (hypertex-latex-fragment-at-point))
         (ov (hypertex--get-or-create-overlay frag)))
-    (hypertex--overlay-image-file ov)))
+    (hypertex--render-overlay frag ov)))
 
 (defun hypertex--get-or-create-overlay (frag)
   (let* ((beg (org-element-property :begin frag))
          (end (org-element-property :end frag))
-         (overlays (overlays-at beg end))
+         (overlays (cl-remove-if-not
+                    (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
+                    (overlays-in beg end)))
          (overlay (if overlays (car overlays) nil)))
-    (if (and overlay
-             (eq 'org-hypertex-overlay (overlay-get overlay 'org-overlay-type)))
-        overlay
+    (if overlay overlay
       (let ((ov (make-overlay beg end)))
         (progn (overlay-put ov 'org-overlay-type 'org-hypertex-overlay)
                (overlay-put ov 'evaporate t)
@@ -108,9 +62,28 @@
 (defun hypertex--render-overlay (frag ov)
   (let* ((img-file (hypertex--overlay-image-file ov))
          (tex (org-element-property :value frag))
-         )
-    (libhypertex-render-tex libhypertex-renderer (point) (mark) tex img-file)
-    ))
+         (tex (hypertex--set-colors tex)))
+    (progn
+      (libhypertex-render-tex libhypertex-renderer (point) (mark) tex img-file)
+      (overlay-put ov
+                   'display
+                   (list 'image :type 'svg :file img-file :ascent 'center)))))
+
+(defun hypertex--set-colors (tex)
+  (let* ((fg (face-attribute (face-at-point) :foreground nil 'default))
+         (bg (face-attribute (face-at-point) :background nil 'default)))
+    (progn
+      (message "%s" fg)
+      (format "\n
+\\definecolor{fg}{rgb}{%s}\n
+\\definecolor{bg}{rgb}{%s}\n
+\\pagecolor{bg}\n
+{\\color{fg}\n
+%s
+\n}\n"
+              (org-latex-color-format fg)
+              (org-latex-color :background)
+              tex))))
 
 (defun hypertex--overlay-image-file (ov)
   (let* ((id (overlay-get ov 'hypertex-overlay-id))
@@ -131,9 +104,10 @@
           nil))
     nil))
 
-(defun hypertex--org-latex-overlay-at-point ()
-  (let ((lst (org--list-latex-overlays (point) (point))))
-    (if lst (car lst) nil)))
+(defun hypertex--overlay-at-point ()
+  (car (cl-remove-if-not
+        (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
+        (overlays-at (point)))))
 
 (evil-define-text-object hypertex-atom-text-object (count)
   ""
@@ -142,8 +116,8 @@
 (defun hypertex-motion-wrapper (body)
   (progn
     (funcall body)
-    (let ((overlays (hypertex--org-latex-overlays-at-point)))
-      (if overlays
+    (let ((overlay (hypertex--overlay-at-point)))
+      (if overlay
           (progn
             (setq disable-point-adjustment t)
             (setq cursor-type nil)
