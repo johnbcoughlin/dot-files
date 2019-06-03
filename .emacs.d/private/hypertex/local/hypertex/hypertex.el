@@ -6,50 +6,17 @@
 
 (defvar hypertex-latex-preamble
   "
-\\documentclass{article}
-\\usepackage[usenames]{color}
-\\usepackage[normalem]{ulem}
-\\usepackage{amsmath}
-\\usepackage{amssymb}
-\\usepackage{textcomp}
-\\usepackage{graphicx}
-\\usepackage{wrapfig}
-\\usepackage{graphicx}
-\\usepackage{grffile}
-% Package longtable omitted
-% Package wrapfig omitted
-% Package rotating omitted
-% Package capt-of omitted
-% Package hyperref omitted
-\\pagestyle{empty}             % do not remove
-% The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-
-\\usepackage{rcurs}
-
-% Set up highlighting for simulating the cursor
-\\usepackage{xcolor}
-\\usepackage{soul}
-\\newcommand{\\mathcolorbox}[2]{\\colorbox{#1}{$\\displaystyle #2$}}
 ")
 
-(defvar hypertex-latex-command-line
-  "xelatex -no-pdf")
+(defvar hypertex--last-overlay nil)
+(defvar hypertex--last-frag nil)
 
 ;; Set up the renderer
-(setq libhypertex-renderer
-      (libhypertex-start-renderer hypertex-latex-preamble 10))
+(defun hypertex-renderer-start ()
+  (setq libhypertex-renderer
+        (libhypertex-start-renderer
+         hypertex-latex-preamble
+         1)))
 
 (define-minor-mode hypertex-mode
   "Toggle HyperLaTeX mode."
@@ -59,12 +26,13 @@
   (if hypertex-mode
       (progn
         ;(add-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
-        ;(add-hook 'post-command-hook 'hypertex-rerender-at-point)
-        ;(add-hook 'post-self-insert-hook 'hypertex-rerender-at-point)
+        (add-hook 'post-command-hook 'hypertex--postcommand)
+        (add-hook 'post-self-insert-hook 'hypertex--postcommand)
+        (hypertex-renderer-start)
         )
-    ;(remove-hook 'post-command-hook 'hypertex-rerender-at-point)
+    (remove-hook 'post-command-hook 'hypertex--postcommand)
     ;(remove-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
-    ;(remove-hook 'post-self-insert-hook 'hypertex-rerender-at-point)
+    (remove-hook 'post-self-insert-hook 'hypertex--postcommand)
     ))
 
 (defun hypertex-clear-overlay-at-point ()
@@ -72,33 +40,46 @@
          (ov (if ovs (car ovs) nil)))
     (if ov (delete-overlay ov) ())))
 
-(defun hypertex-rerender-at-point ()
+(defun hypertex--postcommand ()
+  (progn
+    (hypertex--render-just-exited-overlay)
+    ;; This function will override the variables used by the previous one
+    (hypertex--render-overlay-at-point)
+    ))
+
+(defun hypertex--render-overlay-at-point ()
   (let ((frag (hypertex-latex-fragment-at-point)))
     (if frag
-        (let* ((ov (hypertex--org-latex-overlay-at-point))
-               (overlay (if ov
-                            ov
-                          (progn
-                            (hypertex--org-latex-overlay-at-point)))))
-          (progn
-            (message "creating new overlay")
-            (hypertex--create-or-get-overlay frag)
-            (message "rerendered"))
-          ()))))
+        (let ((ov (hypertex--get-or-create-overlay frag)))
+          (if ov
+              (progn
+                (hypertex--render-overlay frag ov)
+                (setq hypertex--last-overlay ov
+                      hypertex--last-frag frag)
+                )
+            ()))
+      ())))
 
-(defun hypertex--testtest ()
-  (let* ((frag (hypertex-latex-fragment-at-point))
-        (ov (hypertex--get-or-create-overlay frag)))
-    (hypertex--overlay-image-file ov)))
+(defun hypertex--render-just-exited-overlay ()
+  (if (and (not (hypertex-latex-fragment-at-point))
+           hypertex--last-overlay
+           hypertex--last-frag)
+      (progn
+        (hypertex--render-overlay hypertex--last-frag hypertex--last-overlay)
+        (setq hypertex--last-overlay nil
+              hypertex--last-frag nil))))
 
 (defun hypertex--get-or-create-overlay (frag)
   (let* ((beg (org-element-property :begin frag))
-         (end (org-element-property :end frag))
-         (overlays (overlays-at beg end))
+         (end (save-excursion
+                (goto-char (org-element-property :end frag))
+                (skip-chars-backward " \r\t\n")
+                (point)))
+         (overlays (cl-remove-if-not
+                    (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
+                    (overlays-in beg end)))
          (overlay (if overlays (car overlays) nil)))
-    (if (and overlay
-             (eq 'org-hypertex-overlay (overlay-get overlay 'org-overlay-type)))
-        overlay
+    (if overlay overlay
       (let ((ov (make-overlay beg end)))
         (progn (overlay-put ov 'org-overlay-type 'org-hypertex-overlay)
                (overlay-put ov 'evaporate t)
@@ -106,11 +87,42 @@
                ov)))))
 
 (defun hypertex--render-overlay (frag ov)
-  (let* ((img-file (hypertex--overlay-image-file ov))
-         (tex (org-element-property :value frag))
+  (let* ((tex (org-element-property :value frag))
+         (fg (hypertex-latex-color :foreground))
+         (cursor-color (hypertex-latex-color-format (face-background 'cursor)))
          )
-    (libhypertex-render-tex libhypertex-renderer (point) (mark) tex img-file)
-    ))
+    (let ((img-file
+           (libhypertex-render-tex
+            libhypertex-renderer
+            fg
+            (hypertex--marker-within-frag (point) frag)
+            (hypertex--marker-within-frag (mark) frag)
+            cursor-color
+            tex
+            "/Users/jack/org/ltximg"
+            (symbol-name evil-state))))
+      (progn
+        (if img-file
+            (overlay-put ov
+                         'display
+                         (list 'image
+                               :type 'imagemagick
+                               :file img-file
+                               :ascent 'center
+                               :scale 0.24
+                               ))
+          ())
+        (setq disable-point-adjustment t)))))
+
+(defun hypertex-latex-color (attr)
+  "Return a RGB color for the LaTeX color package."
+  (hypertex-latex-color-format (face-attribute 'default attr nil)))
+
+(defun hypertex-latex-color-format (color-name)
+  "Convert COLOR-NAME to a RGB color value."
+  (apply #'format "%s %s %s"
+         (mapcar 'org-normalize-color
+                 (color-values color-name))))
 
 (defun hypertex--overlay-image-file (ov)
   (let* ((id (overlay-get ov 'hypertex-overlay-id))
@@ -119,7 +131,7 @@
                   temporary-file-directory
                   default-directory))
          (dir (concat parent-dir org-preview-latex-image-directory))
-         (img_file (concat dir (format "org-ltximg_%s.svg" id))))
+         (img_file (concat dir (format "org-ltximg_%s.png" id))))
     img_file))
 
 (defun hypertex-latex-fragment-at-point ()
@@ -131,9 +143,10 @@
           nil))
     nil))
 
-(defun hypertex--org-latex-overlay-at-point ()
-  (let ((lst (org--list-latex-overlays (point) (point))))
-    (if lst (car lst) nil)))
+(defun hypertex--overlay-at-point ()
+  (car (cl-remove-if-not
+        (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
+        (overlays-at (point)))))
 
 (evil-define-text-object hypertex-atom-text-object (count)
   ""
@@ -142,8 +155,8 @@
 (defun hypertex-motion-wrapper (body)
   (progn
     (funcall body)
-    (let ((overlays (hypertex--org-latex-overlays-at-point)))
-      (if overlays
+    (let ((overlay (hypertex--overlay-at-point)))
+      (if overlay
           (progn
             (setq disable-point-adjustment t)
             (setq cursor-type nil)
@@ -165,7 +178,7 @@
     (if frag
         (let* ((tex (org-element-property :value frag))
                (begin (org-element-property :begin frag))
-               (pt (- (point) begin))
+               (pt (hypertex--marker-within-frag (point) frag))
                (atom (libhypertex-select-atoms pt count tex))
                )
           (if atom (let ((beg (+ (car atom) begin)))
@@ -173,7 +186,15 @@
             nil))
       nil)))
 
+(defun hypertex--marker-within-frag (marker frag)
+  (if marker
+      (let* ((begin (org-element-property :begin frag))
+             (pt (- marker begin)))
+        pt)
+    nil))
+
 (evil-define-motion evil-hypertex-atom-forward (count &optional crosslines noerror)
+  (interactive)
   (hypertex-motion-wrapper
    (lambda ()
      (hypertex--combined-motion-loop
@@ -183,6 +204,7 @@
 
 (evil-define-motion evil-hypertex-atom-backward (count &optional crosslines noerror)
   "Move forward by COUNT symbols, as they appear in the rendered LaTeX equation"
+  (interactive)
   (hypertex-motion-wrapper
    (lambda ()
      (hypertex--combined-motion-loop
