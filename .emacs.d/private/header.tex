@@ -36,12 +36,44 @@
 \usepackage{soul}
 \usepackage{adjustbox}
 
+\usepackage{xparse}
+
+\NewDocumentCommand{\colornucleus}{omme{_^}}{%
+  \begingroup\colorlet{currcolor}{.}%
+  \IfValueTF{#1}
+   {\textcolor[#1]{#2}}
+   {\textcolor{#2}}
+    {%
+     #3% the nucleus
+     \IfValueT{#4}{_{\textcolor{currcolor}{#4}}}% subscript
+     \IfValueT{#5}{^{\textcolor{currcolor}{#5}}}% superscript
+    }%
+  \endgroup
+}
+
+\NewDocumentCommand{\colornucleusop}{omme{_^}}{%
+  \mathop{
+  \begingroup\colorlet{currcolor}{.}%
+  \IfValueTF{#1}
+   {\textcolor[#1]{#2}}
+   {\textcolor{#2}}
+    {%
+     #3% the nucleus
+     \IfValueT{#4}{_{\textcolor{currcolor}{#4}}}% subscript
+     \IfValueT{#5}{^{\textcolor{currcolor}{#5}}}% superscript
+    }%
+  \endgroup
+}
+}
+
+\newcommand\cursor{\makebox[0pt]{$|$}}
+
 \makeatletter
 \def\mathcolor#1#{\@mathcolor{#1}}
 \def\@mathcolor#1#2#3{%
   \protect\leavevmode
   \begingroup
-    \textcolor#1{#2}#3%
+    \color#1{#2}#3%
   \endgroup
 }
 \makeatother

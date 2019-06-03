@@ -8,6 +8,9 @@
   "
 ")
 
+(defvar hypertex--last-overlay nil)
+(defvar hypertex--last-frag nil)
+
 ;; Set up the renderer
 (defun hypertex-renderer-start ()
   (setq libhypertex-renderer
@@ -24,12 +27,12 @@
       (progn
         ;(add-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
         (add-hook 'post-command-hook 'hypertex--postcommand)
-        (add-hook 'post-self-insert-hook 'hypertex--testtest)
+        (add-hook 'post-self-insert-hook 'hypertex--postcommand)
         (hypertex-renderer-start)
         )
     (remove-hook 'post-command-hook 'hypertex--postcommand)
     ;(remove-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
-    (remove-hook 'post-self-insert-hook 'hypertex--testtest)
+    (remove-hook 'post-self-insert-hook 'hypertex--postcommand)
     ))
 
 (defun hypertex-clear-overlay-at-point ()
@@ -39,20 +42,32 @@
 
 (defun hypertex--postcommand ()
   (progn
-    (hypertex--testtest)
+    (hypertex--render-just-exited-overlay)
+    ;; This function will override the variables used by the previous one
+    (hypertex--render-overlay-at-point)
     ))
 
-(defun hypertex--testtest ()
+(defun hypertex--render-overlay-at-point ()
   (let ((frag (hypertex-latex-fragment-at-point)))
     (if frag
         (let ((ov (hypertex--get-or-create-overlay frag)))
           (if ov
               (progn
-                (message "doing the thing")
-                (hypertex--render-overlay frag ov))
+                (hypertex--render-overlay frag ov)
+                (setq hypertex--last-overlay ov
+                      hypertex--last-frag frag)
+                )
             ()))
       ())))
 
+(defun hypertex--render-just-exited-overlay ()
+  (if (and (not (hypertex-latex-fragment-at-point))
+           hypertex--last-overlay
+           hypertex--last-frag)
+      (progn
+        (hypertex--render-overlay hypertex--last-frag hypertex--last-overlay)
+        (setq hypertex--last-overlay nil
+              hypertex--last-frag nil))))
 
 (defun hypertex--get-or-create-overlay (frag)
   (let* ((beg (org-element-property :begin frag))
@@ -74,6 +89,7 @@
 (defun hypertex--render-overlay (frag ov)
   (let* ((tex (org-element-property :value frag))
          (fg (hypertex-latex-color :foreground))
+         (cursor-color (hypertex-latex-color-format (face-background 'cursor)))
          )
     (let ((img-file
            (libhypertex-render-tex
@@ -81,18 +97,21 @@
             fg
             (hypertex--marker-within-frag (point) frag)
             (hypertex--marker-within-frag (mark) frag)
+            cursor-color
             tex
             "/Users/jack/org/ltximg"
             (symbol-name evil-state))))
       (progn
-        (overlay-put ov
-                     'display
-                     (list 'image
-                           :type 'imagemagick
-                           :file img-file
-                           :ascent 'center
-                           :scale 0.24
-                           ))
+        (if img-file
+            (overlay-put ov
+                         'display
+                         (list 'image
+                               :type 'imagemagick
+                               :file img-file
+                               :ascent 'center
+                               :scale 0.24
+                               ))
+          ())
         (setq disable-point-adjustment t)))))
 
 (defun hypertex-latex-color (attr)
@@ -101,7 +120,7 @@
 
 (defun hypertex-latex-color-format (color-name)
   "Convert COLOR-NAME to a RGB color value."
-  (apply #'format "rgb %s %s %s"
+  (apply #'format "%s %s %s"
          (mapcar 'org-normalize-color
                  (color-values color-name))))
 
