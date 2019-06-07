@@ -311,6 +311,7 @@ you should place your code here."
   (jack/config-evil)
   (jack/config-ivy)
   (jack/config-org)
+  (jack/config-rust)
   (jack/config-tramp)
   (jack/config-windows)
 
@@ -842,6 +843,9 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;;;; End of customization
  )
 
+;;; Rust
+(defun jack/config-rust ()
+  (spacemacs/set-leader-keys-for-major-mode 'rust-mode "ct" 'cargo-process-current-test))
 ;;; TRAMP
 (defun jack/config-tramp ()
   ;; Turn off projectile mode, which can make TRAMP slower
