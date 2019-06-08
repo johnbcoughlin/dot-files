@@ -714,7 +714,13 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;;;;; Capture Templates
  '(org-capture-templates
    (quote
-    (("j" "Journal" entry
+    (("j" "Journal")
+     ("jp" "Personal Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
+      "* %?
+%U
+")
+     ("jw" "Work Journal" entry
       (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
       "* %?
 %U
