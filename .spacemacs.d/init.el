@@ -1,4 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
+;; -*- eval: (outline-minor-mode +1)
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -308,6 +309,11 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+  ;; Set the location for customizations to a different file
+  (setq custom-file "~/.spacemacs.d/custom.el")
+  (load custom-file)
+
   (jack/config-evil)
   (jack/config-ivy)
   (jack/config-org)
@@ -338,6 +344,11 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cdlatex-command-alist
+   (quote
+    (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
+     ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
+ '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
  '(fill-column 80)
  '(latex-run-command "xelatex")
  '(org-agenda-clock-consistency-checks
@@ -348,7 +359,76 @@ you should place your code here."
                    ((:background "DarkRed")
                     (:foreground "white"))
                    :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil)))
+ '(org-agenda-clockreport-parameter-plist (quote (:link t :maxlevel 4)))
+ '(org-agenda-custom-commands
+   (quote
+    ((" " "Agenda"
+      ((agenda ""
+               ((org-agenda-skip-function
+                 (quote
+                  (my-skip-tag "drill"))))))
+      nil nil)
+     ("o" "Organization"
+      ((tags "REFILE"
+             ((org-agenda-overriding-header "Tasks to Refile")))
+       (tags-todo "-CANCELLED-WAIT-HOLD/!"
+                  ((org-agenda-overriding-header "Stuck Projects")
+                   (org-agenda-skip-function
+                    (quote bh/skip-non-stuck-projects))
+                   (org-agenda-sorting-strategy
+                    (quote
+                     (category-keep)))))
+       (todo "WAIT"
+             ((org-agenda-overriding-header "Blocked Tasks")))
+       (todo "HOLD"
+             ((org-agenda-overriding-header "On Hold"))))
+      nil nil)
+     ("t" "Tasks"
+      ((todo "NEXT"
+             ((org-agenda-overriding-header "Next Tasks")))
+       (todo "TODO"
+             ((org-agenda-overriding-header "TODOs"))))))))
+ '(org-agenda-restore-windows-after-quit t)
+ '(org-agenda-tags-todo-honor-ignore-options t)
+ '(org-agenda-todo-ignore-scheduled 1)
+ '(org-agenda-window-setup (quote other-window))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (latex . t))))
+ '(org-capture-templates
+   (quote
+    (("j" "Journal")
+     ("jp" "Personal Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
+      "* %?
+%U
+")
+     ("jw" "Work Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
+      "* %?
+%U
+" :jump-to-captured t :clock-in t :clock-resume t)
+     ("m" "Meeting" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* MEETING with %? :MEETING:")
+     ("s" "Snippet")
+     ("sv" "Contents of selection" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* Snippet :snippet:
+%i")
+     ("t" "New task" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* TODO %^{Task}" :clock-in t :clock-resume t)
+     ("p" "Phone call" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* Phone Call %? :PHONE:
+%U" :clock-in t :clock-resume t)
+     ("d" "Item to drill")
+     ("dk" "New key binding" entry
+      (file+olp "~/org/emacs.org" "Key Bindings")
+      "*** Task :drill:
+%^{Task}
+**** Shortcut
+%^{Shortcut}"))))
+ '(org-clock-in-switch-to-state "NEXT")
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
  '(org-format-latex-header "%&~/.emacs.d/private/header
@@ -358,9 +438,71 @@ you should place your code here."
     (:foreground default :background default :scale 1.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
                  ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-habit-show-habits-only-for-today t)
+ '(org-latex-compiler "xelatex")
+ '(org-latex-pdf-process
+   (quote
+    ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
+ '(org-modules (quote (org-docview org-habit org-info org-drill)))
+ '(org-outline-path-complete-in-steps nil)
+ '(org-preview-latex-default-process (quote dvisvgm))
+ '(org-preview-latex-process-alist
+   (quote
+    ((dvipng :programs
+             ("latex" "dvipng")
+             :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
+             (1.0 . 1.0)
+             :latex-compiler
+             ("latex -interaction nonstopmode -output-directory %o %f")
+             :image-converter
+             ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
+     (dvisvgm :programs
+              ("xelatex" "dvisvgm")
+              :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
+              (1.7 . 1.5)
+              :latex-compiler
+              ("xelatex -no-pdf -interaction batchmode -output-directory %o %f")
+              :image-converter
+              ("dvisvgm %f -n -b min -c %S -o %O"))
+     (imagemagick :programs
+                  ("latex" "convert")
+                  :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
+                  (1.0 . 1.0)
+                  :latex-compiler
+                  ("pdflatex -interaction nonstopmode -output-directory %o %f")
+                  :image-converter
+                  ("convert -density %D -trim -antialias %f -quality 100 %O")))))
+ '(org-refile-allow-creating-parent-nodes (quote confirm))
+ '(org-refile-targets
+   (quote
+    ((nil :maxlevel . 9)
+     (org-agenda-files :maxlevel . 9))))
+ '(org-refile-use-outline-path (quote file))
+ '(org-stuck-projects (quote ("" nil nil "")))
+ '(org-tag-alist
+   (quote
+    (("work" . 119)
+     ("personal" . 112)
+     ("lizeth" . 108))))
+ '(org-tags-exclude-from-inheritance (quote ("PROJECT")))
+ '(org-todo-keyword-faces
+   (quote
+    (("TODO" . "bisque")
+     ("NEXT" . "gold")
+     ("DONE" . "forest green")
+     ("WAIT" . "chocolate")
+     ("HOLD" . "light slate blue")
+     ("CANCELLED" . "grey")
+     ("PHONE" . "purple")
+     ("MEETING" . "purple"))))
+ '(org-todo-keywords
+   (quote
+    ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+     (sequence "WAIT(w@/!)" "HOLD(h!/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
  '(package-selected-packages
    (quote
-    (outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy))))
+    (writeroom-mode olivetti outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+ '(split-height-threshold 120)
+ '(split-width-threshold 100))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -378,6 +520,16 @@ you should place your code here."
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil))
 ;;; Org Mode
 (defun jack/config-org ()
+;;;; Keybindings
+;;;; Agenda
+  (setq org-agenda-files
+        (quote
+         ("/ssh:emacs-node:/home/jack/org"
+          "~/src/hypertex/hypertex.org")))
+;;;; cdlatex
+  (with-eval-after-load 'org
+    (define-key org-cdlatex-mode-map ";" 'cdlatex-math-symbol))
+  (setq cdlatex-math-symbol-prefix 59)
 ;;;; OS X Widget
   ;; Alert menu bar app when clocking in and out
   (add-hook 'org-clock-in-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" (concat "tell application \"org-clock-statusbar\" to clock in \"" (replace-regexp-in-string "\"" "\\\\\"" org-clock-current-task) "\""))))
@@ -657,198 +809,6 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
         nil
       next-headline)))
 
-;;;; Customization
-(custom-set-variables
-;;;;; General
- '(org-modules (quote (org-docview org-habit org-info org-drill)))
- '(org-outline-path-complete-in-steps nil)
-;;;;; Writing
-;; Make M-RET behave properly
-;;;;;; Autofill
-;; Set automatic line breaks at 80 chars
-;;;;; Org + LaTeX
-;; Use XeLaTeX to export as LaTeX
- '(org-latex-compiler "xelatex")
- ;; Run the compiler in three passes
- '(org-latex-pdf-process
-   (quote
-    ("xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f" "xelatex -interaction nonstopmode -output-directory %o %f")))
-;;;;;; Preview
- '(org-preview-latex-default-process (quote dvisvgm))
- '(org-preview-latex-process-alist
-   (quote
-    ((dvipng :programs
-             ("latex" "dvipng")
-             :description "dvi > png" :message "you need to install the programs: latex and dvipng." :image-input-type "dvi" :image-output-type "png" :image-size-adjust
-             (1.0 . 1.0)
-             :latex-compiler
-             ("latex -interaction nonstopmode -output-directory %o %f")
-             :image-converter
-             ("dvipng -fg %F -bg %B -D %D -T tight -o %O %f"))
-     (dvisvgm :programs
-              ("xelatex" "dvisvgm")
-              :description "dvi > svg" :message "you need to install the programs: latex and dvisvgm." :use-xcolor t :image-input-type "xdv" :image-output-type "svg" :image-size-adjust
-              (1.7 . 1.5)
-              :latex-compiler
-              ("xelatex -no-pdf -interaction batchmode -output-directory %o %f")
-              :image-converter
-              ("dvisvgm %f -n -b min -c %S -o %O"))
-     (imagemagick :programs
-                  ("latex" "convert")
-                  :description "pdf > png" :message "you need to install the programs: latex and imagemagick." :use-xcolor t :image-input-type "pdf" :image-output-type "png" :image-size-adjust
-                  (1.0 . 1.0)
-                  :latex-compiler
-                  ("pdflatex -interaction nonstopmode -output-directory %o %f")
-                  :image-converter
-                  ("convert -density %D -trim -antialias %f -quality 100 %O")))))
-
-;;;;;; cdlatex
-;; "Commands"--i.e., type cmd-TAB to expand the command like a snippet.
- '(cdlatex-command-alist
-   (quote
-    (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
-     ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
- '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
-
-;;;;; Capture
-;;;;;; Capture Templates
- '(org-capture-templates
-   (quote
-    (("j" "Journal")
-     ("jp" "Personal Journal" entry
-      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
-      "* %?
-%U
-")
-     ("jw" "Work Journal" entry
-      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
-      "* %?
-%U
-" :jump-to-captured t :clock-in t :clock-resume t)
-     ("m" "Meeting" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* MEETING with %? :MEETING:")
-     ("s" "Snippet")
-     ("sv" "Contents of selection" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* Snippet :snippet:
-%i")
-     ("t" "New task" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* TODO %^{Task}" :clock-in t :clock-resume t)
-     ("p" "Phone call" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* Phone Call %? :PHONE:
-%U" :clock-in t :clock-resume t)
-     ("d" "Item to drill")
-     ("dk" "New key binding" entry
-      (file+olp "~/org/emacs.org" "Key Bindings")
-      "*** Task :drill:
-%^{Task}
-**** Shortcut
-%^{Shortcut}"))))
-
-;;;;; Refile
- '(org-refile-use-outline-path (quote file))
- ;; Refile to agenda files up to 9 levels deep
- '(org-refile-targets
-   (quote
-    ((nil :maxlevel . 9)
-     (org-agenda-files :maxlevel . 9))))
- ;; Create parent nodes with confirmation
- '(org-refile-allow-creating-parent-nodes (quote confirm))
-;;;;; Archive
-;;;;; Todos
- '(org-todo-keywords
-   (quote
-    ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-     (sequence "WAIT(w@/!)" "HOLD(h!/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
- '(org-todo-keyword-faces
-   (quote
-    (("TODO" . "bisque")
-     ("NEXT" . "gold")
-     ("DONE" . "forest green")
-     ("WAIT" . "chocolate")
-     ("HOLD" . "light slate blue")
-     ("CANCELLED" . "grey")
-     ("PHONE" . "purple")
-     ("MEETING" . "purple"))))
-;;;;; Tags
- '(org-tag-alist
-   (quote
-    (("work" . ?w)
-     ("personal" . ?p)
-     ("lizeth" . ?l))))
- ;; Subtasks of projects are not projects
- '(org-tags-exclude-from-inheritance (quote ("PROJECT")))
-;;;;; Agenda
-;; Use files on the remote host
- '(org-agenda-files (quote ("/ssh:emacs-node:/home/jack/org")))
- '(org-agenda-restore-windows-after-quit t)
- '(org-agenda-tags-todo-honor-ignore-options t)
- '(org-agenda-todo-ignore-scheduled 1)
- '(org-agenda-window-setup (quote other-window))
-;;;;;; Stuck Projects
- ;; Null out the default stuck project filter, since we're going to use our own definition
- '(org-stuck-projects (quote ("" nil nil "")))
-;;;;;; Custom Agenda Commands
- '(org-agenda-custom-commands
-   (quote
-;;;;;;; Block Agenda
-    ((" " "Agenda"
-      ((agenda ""
-               ((org-agenda-skip-function
-                 (quote
-                  (my-skip-tag "drill")))))
-       (todo "PROG"
-             ((org-agenda-overriding-header "Currently in Progress")))
-       (tags "REFILE"
-             ((org-agenda-overriding-header "Tasks to Refile")))
-       (tags-todo "-PROJECT-STYLE=\"habit\"-REFILE/!TODO|NEXT"
-                  ((org-agenda-overriding-header "Todo and Next Tasks")))
-       (stuck ""
-              ((org-agenda-overriding-header "Stuck Projects")))
-       (todo "WAIT"
-             ((org-agenda-overriding-header "Blocked Tasks"))))
-      nil nil)
-;;;;;;; Organization
-    ("o" "Organization"
-     ((tags "REFILE"
-            ((org-agenda-overriding-header "Tasks to Refile")))
-      (tags-todo "-CANCELLED/!"
-                 ((org-agenda-overriding-header "Stuck Projects")
-                  (org-agenda-skip-function 'bh/skip-non-stuck-projects)
-                  (org-agenda-sorting-strategy
-                   '(category-keep))))
-      (todo "WAIT"
-            ((org-agenda-overriding-header "Blocked Tasks")))
-      (todo "HOLD"
-            ((org-agenda-overriding-header "On Hold"))))
-     nil nil)
-    ("t" "Tasks"
-     ((todo "NEXT"
-            ((org-agenda-overriding-header "Next Tasks")))
-      (todo "TODO"
-            ((org-agenda-overriding-header "TODOs")))))
-    )))
-
-;;;;; Clocking
- '(org-clock-in-switch-to-state "NEXT")
-;;;;;; Clock report
- '(org-agenda-clockreport-parameter-plist (quote (:link t :maxlevel 4)))
-;;;;;; Consistency
- '(org-agenda-clock-consistency-checks
-   (quote
-    (:max-duration "10:00" :min-duration 0 :max-gap "0:05" :gap-ok-around
-                   ("4:00")
-                   :default-face
-                   ((:background "DarkRed")
-                    (:foreground "white"))
-                   :overlap-face nil :gap-face nil :no-end-time-face nil :long-face nil :short-face nil)))
-
-;;;;; End of customization
- )
-
 ;;; Rust
 (defun jack/config-rust ()
   (spacemacs/set-leader-keys-for-major-mode 'rust-mode "ct" 'cargo-process-current-test))
@@ -866,7 +826,4 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (defun jack/config-windows ()
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen))
 ;;;; Customization
-(custom-set-variables
- ;; Prefer vertical splits if possible
- '(split-height-threshold 120)
- '(split-width-threshold 100))
+

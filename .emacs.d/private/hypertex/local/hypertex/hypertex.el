@@ -18,6 +18,11 @@
          hypertex-latex-preamble
          1)))
 
+(defun hypertex-renderer-stop ()
+  (progn
+    (libhypertex-shutdown-renderer libhypertex-renderer)
+    (setq libhypertex-renderer nil)))
+
 (define-minor-mode hypertex-mode
   "Toggle HyperLaTeX mode."
   nil
@@ -30,6 +35,7 @@
         (add-hook 'post-self-insert-hook 'hypertex--postcommand)
         (hypertex-renderer-start)
         )
+    (hypertex-renderer-stop)
     (remove-hook 'post-command-hook 'hypertex--postcommand)
     ;(remove-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
     (remove-hook 'post-self-insert-hook 'hypertex--postcommand)
@@ -44,8 +50,7 @@
   (progn
     (hypertex--render-just-exited-overlay)
     ;; This function will override the variables used by the previous one
-    (hypertex--render-overlay-at-point)
-    ))
+    (hypertex-overlay-wrapper 'hypertex--render-overlay-at-point)))
 
 (defun hypertex--render-overlay-at-point ()
   (let ((frag (hypertex-latex-fragment-at-point)))
@@ -92,27 +97,27 @@
          (cursor-color (hypertex-latex-color-format (face-background 'cursor)))
          )
     (let ((img-file
-           (libhypertex-render-tex
-            libhypertex-renderer
-            fg
-            (hypertex--marker-within-frag (point) frag)
-            (hypertex--marker-within-frag (mark) frag)
-            cursor-color
-            tex
-            "/Users/jack/org/ltximg"
-            (symbol-name evil-state))))
-      (progn
-        (if img-file
-            (overlay-put ov
-                         'display
-                         (list 'image
-                               :type 'imagemagick
-                               :file img-file
-                               :ascent 'center
-                               :scale 0.24
-                               ))
-          ())
-        (setq disable-point-adjustment t)))))
+               (libhypertex-render-tex
+                libhypertex-renderer
+                fg
+                (hypertex--marker-within-frag (point) frag)
+                (hypertex--marker-within-frag (mark) frag)
+                cursor-color
+                tex
+                "/Users/jack/org/ltximg"
+                (symbol-name evil-state))))
+          (progn
+            (if img-file
+                (overlay-put ov
+                             'display
+                             (list 'image
+                                   :type 'imagemagick
+                                   :file img-file
+                                   :ascent 'center
+                                   :scale 0.24
+                                   ))
+              ())
+            (setq disable-point-adjustment t)))))
 
 (defun hypertex-latex-color (attr)
   "Return a RGB color for the LaTeX color package."
@@ -148,13 +153,25 @@
         (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
         (overlays-at (point)))))
 
+(defun hypertex--remove-overlay-at-point ()
+  (let ((ov (hypertex--overlay-at-point)))
+    (if ov
+        (delete-overlay ov)
+      ())))
+
 (evil-define-text-object hypertex-atom-text-object (count)
   ""
   (libhypertex-select-atoms (point) count (org-element-property :value (org-element-context))))
 
-(defun hypertex-motion-wrapper (body)
+(defun hypertex-overlay-wrapper (body)
   (progn
-    (funcall body)
+    ;; Attempt the operation
+    (condition-case nil
+        (funcall body)
+      ;; If it fails, remove the overlay at point if any
+      (error (progn
+                       (message "error happened!")
+                       (hypertex--remove-overlay-at-point))))
     (let ((overlay (hypertex--overlay-at-point)))
       (if overlay
           (progn
@@ -195,7 +212,7 @@
 
 (evil-define-motion evil-hypertex-atom-forward (count &optional crosslines noerror)
   (interactive)
-  (hypertex-motion-wrapper
+  (hypertex-overlay-wrapper
    (lambda ()
      (hypertex--combined-motion-loop
       (or count 1)
@@ -205,7 +222,7 @@
 (evil-define-motion evil-hypertex-atom-backward (count &optional crosslines noerror)
   "Move forward by COUNT symbols, as they appear in the rendered LaTeX equation"
   (interactive)
-  (hypertex-motion-wrapper
+  (hypertex-overlay-wrapper
    (lambda ()
      (hypertex--combined-motion-loop
       (or count 1)
