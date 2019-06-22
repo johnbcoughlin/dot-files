@@ -1,5 +1,4 @@
 (require 'evil)
-(require 'evil-common)
 (require 'latex)
 (require 'tex)
 (require 'libhypertex)
@@ -10,17 +9,20 @@
 
 (defvar hypertex--last-overlay nil)
 (defvar hypertex--last-frag nil)
+;; Sidechannel used to store the value of calc-line-numbering, so that it is usable
+;; in our hook without depending on hook execution ordering.
+(defvar hypertex--calc-line-numbering nil)
 
 ;; Set up the renderer
 (defun hypertex-renderer-start ()
   (setq libhypertex-renderer
         (libhypertex-start-renderer
          hypertex-latex-preamble
-         1)))
+         10)))
 
 (defun hypertex-renderer-stop ()
   (progn
-    (libhypertex-shutdown-renderer libhypertex-renderer)
+    (libhypertex-stop-renderer libhypertex-renderer)
     (setq libhypertex-renderer nil)))
 
 (define-minor-mode hypertex-mode
@@ -30,35 +32,38 @@
   :keymap (make-sparse-keymap)
   (if hypertex-mode
       (progn
-        ;(add-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
+        (add-hook 'pre-command-hook 'hypertex--precommand)
         (add-hook 'post-command-hook 'hypertex--postcommand)
         (add-hook 'post-self-insert-hook 'hypertex--postcommand)
         (hypertex-renderer-start)
         )
     (hypertex-renderer-stop)
+    (remove-hook 'pre-command-hook 'hypertex--precommand)
     (remove-hook 'post-command-hook 'hypertex--postcommand)
-    ;(remove-hook 'pre-command-hook 'hypertex-clear-overlay-at-point)
     (remove-hook 'post-self-insert-hook 'hypertex--postcommand)
     ))
 
-(defun hypertex-clear-overlay-at-point ()
-  (let* ((ovs (overlays-at (point)))
-         (ov (if ovs (car ovs) nil)))
-    (if ov (delete-overlay ov) ())))
+(defun hypertex--precommand ()
+  (progn
+    (setq hypertex--calc-line-numbering calc-line-numbering)))
 
 (defun hypertex--postcommand ()
   (progn
     (hypertex--render-just-exited-overlay)
     ;; This function will override the variables used by the previous one
-    (hypertex-overlay-wrapper 'hypertex--render-overlay-at-point)))
+    ;; (hypertex-overlay-wrapper 'hypertex--render-overlay-at-point)
+    (hypertex--render-overlay-at-point)
+    (if (string= "*Calculator*" (buffer-name))
+        (hypertex--create-line-overlays)
+      ())))
 
 (defun hypertex--render-overlay-at-point ()
   (let ((frag (hypertex-latex-fragment-at-point)))
     (if frag
-        (let ((ov (hypertex--get-or-create-overlay frag)))
+        (let ((ov (hypertex--get-or-create-overlay-at-frag frag)))
           (if ov
               (progn
-                (hypertex--render-overlay frag ov)
+                (hypertex--render-overlay-at-frag frag ov)
                 (setq hypertex--last-overlay ov
                       hypertex--last-frag frag)
                 )
@@ -70,28 +75,36 @@
            hypertex--last-overlay
            hypertex--last-frag)
       (progn
-        (hypertex--render-overlay hypertex--last-frag hypertex--last-overlay)
+        (hypertex--render-overlay-at-frag hypertex--last-frag hypertex--last-overlay)
         (setq hypertex--last-overlay nil
               hypertex--last-frag nil))))
 
-(defun hypertex--get-or-create-overlay (frag)
+(defun hypertex--modification-hook (ov after beg end &optional len)
+  (hypertex--render-overlay-at-point))
+
+(defun hypertex--get-or-create-overlay-at-frag (frag)
   (let* ((beg (org-element-property :begin frag))
          (end (save-excursion
                 (goto-char (org-element-property :end frag))
                 (skip-chars-backward " \r\t\n")
-                (point)))
-         (overlays (cl-remove-if-not
+                (point))))
+    (hypertex--get-or-create-overlay beg end)))
+
+(defun hypertex--get-or-create-overlay (beg end)
+  (let* ((overlays (cl-remove-if-not
                     (lambda (o) (eq (overlay-get o 'org-overlay-type) 'org-hypertex-overlay))
                     (overlays-in beg end)))
          (overlay (if overlays (car overlays) nil)))
-    (if overlay overlay
+    (if overlay
+        overlay
       (let ((ov (make-overlay beg end)))
         (progn (overlay-put ov 'org-overlay-type 'org-hypertex-overlay)
                (overlay-put ov 'evaporate t)
-               (overlay-put ov 'hypertex-overlay-id (sha1 (org-element-property :value frag)))
+               (overlay-put ov 'modification-hooks (list 'hypertex--modification-hook))
+               (overlay-put ov 'hypertex-overlay-id (sha1 (buffer-substring beg end)))
                ov)))))
 
-(defun hypertex--render-overlay (frag ov)
+(defun hypertex--render-overlay-at-frag (frag ov)
   (let* ((tex (org-element-property :value frag))
          (fg (hypertex-latex-color :foreground))
          (cursor-color (hypertex-latex-color-format (face-background 'cursor)))
@@ -100,24 +113,44 @@
                (libhypertex-render-tex
                 libhypertex-renderer
                 fg
-                (hypertex--marker-within-frag (point) frag)
-                (hypertex--marker-within-frag (mark) frag)
                 cursor-color
                 tex
-                "/Users/jack/org/ltximg"
-                (symbol-name evil-state))))
+                "/Users/jack/org/ltximg")))
           (progn
             (if img-file
                 (overlay-put ov
                              'display
                              (list 'image
-                                   :type 'imagemagick
+                                   :type 'svg
                                    :file img-file
                                    :ascent 'center
-                                   :scale 0.24
+                                   :scale 0.34
                                    ))
               ())
             (setq disable-point-adjustment t)))))
+
+(defun hypertex--render-overlay-at (tex ov)
+  (let* ((fg (hypertex-latex-color :foreground))
+         (cursor-color (hypertex-latex-color-format (face-background 'cursor)))
+         (img-file
+          (libhypertex-render-tex
+           libhypertex-renderer
+           fg
+           cursor-color
+           tex
+           "/Users/jack/org/ltximg")))
+    (progn
+      (if img-file
+          (overlay-put ov
+                       'display
+                       (list 'image
+                             :type 'svg
+                             :file img-file
+                             :ascent 'center
+                             :scale 0.34
+                             :margin 4
+                             )))
+      (setq disable-point-adjustment t))))
 
 (defun hypertex-latex-color (attr)
   "Return a RGB color for the LaTeX color package."
@@ -180,28 +213,39 @@
             )
         (setq cursor-type t)))))
 
-(defun hypertex--combined-motion-loop (count hypertex-motion evil-motion)
-  (evil-motion-loop (unit count)
-    (unless
-        (progn
-          (message "calling hypertex %d" unit)
-          (funcall hypertex-motion unit))
+;; Create or update an overlay on every calc stack entry
+(defun hypertex--create-line-overlays ()
+  (if (string= calc-language "latex")
       (progn
-        (message "calling evil %d" unit)
-        (funcall evil-motion unit)))))
+        (goto-char (point-min))
+        ; Skip the header line --- Emacs Calculator Mode ---
+        (forward-line 1)
+        (while (not (eobp))
+          (hypertex--overlay-line)
+          (forward-line 1)))
+    ()))
 
-(defun hypertex--move-atoms-begin (count)
-  (let ((frag (hypertex-latex-fragment-at-point)))
-    (if frag
-        (let* ((tex (org-element-property :value frag))
-               (begin (org-element-property :begin frag))
-               (pt (hypertex--marker-within-frag (point) frag))
-               (atom (libhypertex-select-atoms pt count tex))
-               )
-          (if atom (let ((beg (+ (car atom) begin)))
-                     (goto-char beg))
-            nil))
-      nil)))
+;; Create or update an overlay on the line at point
+(defun hypertex--overlay-line ()
+  (if (string=
+       "."
+       (string-trim (buffer-substring
+                     (line-beginning-position)
+                     (line-end-position))))
+      ()
+    (let* ((line-start (if hypertex--calc-line-numbering
+                           (+ (line-beginning-position) 4)
+                         (line-beginning-position)))
+           (line-end (line-end-position))
+           (line-contents (buffer-substring line-start line-end))
+           (ov (hypertex--get-or-create-overlay line-start line-end))
+           (tex (format "\\[ %s \\]" line-contents)))
+      (progn
+        (move-overlay ov line-start line-end)
+        (hypertex--render-overlay-at tex ov)
+        )
+          ;(add-face-text-property line-start line-end '(:foreground "green"))
+          )))
 
 (defun hypertex--marker-within-frag (marker frag)
   (if marker
@@ -210,40 +254,32 @@
         pt)
     nil))
 
-(evil-define-motion evil-hypertex-atom-forward (count &optional crosslines noerror)
+;; Activate all formulas for embedded mode
+(defun hypertex--activate-all ()
   (interactive)
-  (hypertex-overlay-wrapper
-   (lambda ()
-     (hypertex--combined-motion-loop
-      (or count 1)
-      (lambda (ct) (hypertex--move-atoms-begin ct))
-      (lambda (ct) (evil-forward-char ct))))))
+  ;; Straight out of org.el
+  (let* ((math-regexp "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}")
+         (cnt 0))
+    (goto-char (point-min))
+    (while (re-search-forward math-regexp (point-max) t)
+      (let* ((context (org-element-context))
+             (type (org-element-type context)))
+        (when (memq type '(latex-environment latex-fragment))
+          (calc-embedded nil))))))
 
-(evil-define-motion evil-hypertex-atom-backward (count &optional crosslines noerror)
-  "Move forward by COUNT symbols, as they appear in the rendered LaTeX equation"
+
+;; Activate the formula at point with calc Embedded mode.
+(defun hypertex--activate-formula ()
   (interactive)
-  (hypertex-overlay-wrapper
-   (lambda ()
-     (hypertex--combined-motion-loop
-      (or count 1)
-      (lambda (ct) (hypertex--move-atoms-begin (- ct)))
-      (lambda (ct) (evil-backward-char ct))))))
+  (calc-embedded)
+  (calc)
+  )
 
-(defvar evil-hypertex-normal-map (make-sparse-keymap))
-(defvar evil-hypertex-motion-map (make-sparse-keymap))
-
-(evil-define-minor-mode-key 'motion 'hypertex-mode "l" 'evil-hypertex-atom-forward)
-(evil-define-minor-mode-key 'motion 'hypertex-mode "h" 'evil-hypertex-atom-backward)
-
-(defvar evil-hypertex-around-map (make-sparse-keymap))
-(defvar evil-hypertex-inside-map (make-sparse-keymap))
-
-(define-key evil-hypertex-around-map "s" 'hypertex-subscript-around)
-(define-key evil-hypertex-inside-map "s" 'hypertex-subsuperscript-inside)
-
-(evil-define-key 'visual hypertex-mode-map
-  "a" evil-hypertex-around-map
-  "i" evil-hypertex-inside-map)
+(defun hypertex--accept-formula ()
+  (interactive)
+  (calc-quit)
+  (calc-embedded)
+  )
 
 ;;;###autoload
 (defun turn-on-hypertex-mode ()

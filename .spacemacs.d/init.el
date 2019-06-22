@@ -45,6 +45,7 @@ values."
      org
      hypertex
      outline-magic
+     pdf-tools
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -314,6 +315,7 @@ you should place your code here."
   (setq custom-file "~/.spacemacs.d/custom.el")
   (load custom-file)
 
+  (jack/config-calc)
   (jack/config-evil)
   (jack/config-ivy)
   (jack/config-org)
@@ -511,6 +513,22 @@ you should place your code here."
  )
 
 
+;;; Calc
+(defun jack/config-calc ()
+  (with-eval-after-load 'calc
+    (progn
+      (define-key calc-mode-map " " spacemacs-cmds)
+      (define-key calc-mode-map "," spacemacs-cmds)
+      (setq calc-settings-file "~/.spacemacs.d/calc.el")
+      )
+    )
+  (with-eval-after-load 'hypertex
+    (progn
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode "o f" 'hypertex--activate-formula)
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode "o a" 'hypertex--accept-formula)
+      (spacemacs/set-leader-keys-for-major-mode 'calc-mode "o a" 'hypertex--accept-formula)
+      ))
+  )
 ;;; Evil
 (defun jack/config-evil ()
   (global-set-key (kbd "C-q") 'evil-escape))
@@ -520,6 +538,10 @@ you should place your code here."
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil))
 ;;; Org Mode
 (defun jack/config-org ()
+;;;; Babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((calc . t)))
 ;;;; Keybindings
 ;;;; Agenda
   (setq org-agenda-files
@@ -824,6 +846,13 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (setq tramp-verbose 1))
 ;;; Windows
 (defun jack/config-windows ()
-  (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen))
+  (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
+  (with-eval-after-load 'linum
+    (progn
+      ;; linum makes various modes very slow
+      (global-linum-mode 0)
+
+      )
+  ))
 ;;;; Customization
 

@@ -1,5 +1,8 @@
 % To compile: latex -ini -jobname="header" "&latex header.tex\dump"
 
+\def\encodingdefault{OT1}\normalfont
+\everyjob\expandafter{\the\everyjob\def\encodingdefault{TU}\normalfont}
+
 \documentclass{article}
 \usepackage[usenames]{color}
 \usepackage[normalem]{ulem}
