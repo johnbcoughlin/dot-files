@@ -518,15 +518,13 @@ you should place your code here."
   (with-eval-after-load 'calc
     (progn
       (define-key calc-mode-map " " spacemacs-cmds)
-      (define-key calc-mode-map "," spacemacs-cmds)
+      ;(define-key calc-mode-map "s-o" 'hypertex--accept-formula)
       (setq calc-settings-file "~/.spacemacs.d/calc.el")
       )
     )
-  (with-eval-after-load 'hypertex
+  (with-eval-after-load 'org
     (progn
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode "o f" 'hypertex--activate-formula)
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode "o a" 'hypertex--accept-formula)
-      (spacemacs/set-leader-keys-for-major-mode 'calc-mode "o a" 'hypertex--accept-formula)
+      (spacemacs/set-leader-keys-for-major-mode 'org-mode "f" 'hypertex--activate-formula)
       ))
   )
 ;;; Evil

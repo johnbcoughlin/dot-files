@@ -174,12 +174,11 @@
 
 (defun hypertex-latex-fragment-at-point ()
   "Returns the LaTeX fragment at point, or nil if none"
-  (if (org-inside-LaTeX-fragment-p)
-      (let ((ctx (org-element-context)))
-        (if (eq 'latex-fragment (org-element-type ctx))
-            ctx
-          nil))
-    nil))
+  (let ((ctx (org-element-context)))
+    (if (or (eq 'latex-fragment (org-element-type ctx))
+            (eq 'latex-environment (org-element-type ctx)))
+        ctx
+      nil)))
 
 (defun hypertex--overlay-at-point ()
   (car (cl-remove-if-not
@@ -267,18 +266,25 @@
         (when (memq type '(latex-environment latex-fragment))
           (calc-embedded nil))))))
 
-
 ;; Activate the formula at point with calc Embedded mode.
 (defun hypertex--activate-formula ()
   (interactive)
-  (calc-embedded)
-  (calc)
-  )
+  (let* ((frag (hypertex-latex-fragment-at-point)))
+    (if frag
+        (progn
+          (goto-char (org-element-property :begin frag))
+          ;; Set a bookmark to jump back to
+          (bookmark-set "hypertex-formula")
+          ;; Move forward so that we're within the equation and calc-embedded will work.
+          (forward-char)
+          (calc-embedded nil)
+          (goto-char (org-element-property :begin frag))
+          (calc)))))
 
 (defun hypertex--accept-formula ()
   (interactive)
-  (calc-quit)
-  (calc-embedded)
+  (spacemacs/alternate-window)
+  (calc-embedded t)
   )
 
 ;;;###autoload
