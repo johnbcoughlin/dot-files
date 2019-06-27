@@ -49,48 +49,12 @@
              ((org-agenda-overriding-header "TODOs"))))))))
  '(org-agenda-files
    (quote
-    ("/ssh:emacs-node:/home/jack/org" "~/src/hypertex/hypertex.org")))
+    ("/ssh:emacs-node:/home/jack/org/calc.org" "/ssh:emacs-node:/home/jack/org/diary.org" "/ssh:emacs-node:/home/jack/org/electrodynamics.org" "/ssh:emacs-node:/home/jack/org/emacs.org" "/ssh:emacs-node:/home/jack/org/facts.org" "/ssh:emacs-node:/home/jack/org/journal.org" "/ssh:emacs-node:/home/jack/org/notes.org" "/ssh:emacs-node:/home/jack/org/personal.org" "/ssh:emacs-node:/home/jack/org/phone.org" "/ssh:emacs-node:/home/jack/org/reading.org" "/ssh:emacs-node:/home/jack/org/refile.org" "/ssh:emacs-node:/home/jack/org/spanish.org" "/ssh:emacs-node:/home/jack/org/work.org" "/ssh:emacs-node:/home/jack/org/workout.org")))
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-tags-todo-honor-ignore-options t)
  '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (latex . t))))
- '(org-capture-templates
-   (quote
-    (("j" "Journal")
-     ("jp" "Personal Journal" entry
-      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
-      "* %?
-%U
-")
-     ("jw" "Work Journal" entry
-      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
-      "* %?
-%U
-" :jump-to-captured t :clock-in t :clock-resume t)
-     ("m" "Meeting" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* MEETING with %? :MEETING:")
-     ("s" "Snippet")
-     ("sv" "Contents of selection" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* Snippet :snippet:
-%i")
-     ("t" "New task" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* TODO %^{Task}" :clock-in t :clock-resume t)
-     ("p" "Phone call" entry
-      (file "/ssh:emacs-node:/home/jack/org/refile.org")
-      "* Phone Call %? :PHONE:
-%U" :clock-in t :clock-resume t)
-     ("d" "Item to drill")
-     ("dk" "New key binding" entry
-      (file+olp "~/org/emacs.org" "Key Bindings")
-      "*** Task :drill:
-%^{Task}
-**** Shortcut
-%^{Shortcut}"))))
- '(org-clock-in-switch-to-state "NEXT")
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
  '(org-format-latex-header "%&~/.emacs.d/private/header
