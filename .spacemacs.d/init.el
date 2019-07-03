@@ -520,11 +520,21 @@ you should place your code here."
       (define-key calc-mode-map " " spacemacs-cmds)
       ;(define-key calc-mode-map "s-o" 'hypertex--accept-formula)
       (setq calc-settings-file "~/.spacemacs.d/calc.el")
+      (bind-keys :map calc-mode-map
+                 :prefix "C-x l"
+                 :prefix-map hypertex
+                 ("a" . hypertex-accept-formula)
+                 )
       )
     )
   (with-eval-after-load 'org
     (progn
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode "f" 'hypertex--activate-formula)
+      (bind-keys :map org-mode-map
+                 :prefix "C-x l"
+                 :prefix-map hypertex
+                 ("f" . hypertex-activate-formula)
+                 ("a" . hypertex-accept-formula)
+       )
       ))
   )
 ;;; Evil

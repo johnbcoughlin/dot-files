@@ -45,16 +45,51 @@
 
 (defun hypertex--precommand ()
   (progn
-    (setq hypertex--calc-line-numbering calc-line-numbering)))
+    (setq hypertex--calc-line-numbering calc-line-numbering)
+    (if (and (string= "*Calculator*" (buffer-name))
+             (string-prefix-p "calc" (symbol-name this-command)))
+        (let ((stack-size (calc-stack-size))
+              (selections-enabled (if calc-use-selections 1 0))
+              (inhibit-message t)
+              )
+          (progn
+            (dotimes (idx (calc-stack-size))
+              (progn
+                (calc-enable-selections 0)
+                (calc-roll-down (calc-stack-size))
+                (calc-enable-selections 1)
+                (if (calc-top-selected)
+                    (calc-rewrite-selection "hideselected" 1)
+                  ())
+                ))
+            (calc-enable-selections selections-enabled)
+            ))
+      )
+    ))
 
 (defun hypertex--postcommand ()
   (progn
     (hypertex--render-just-exited-overlay)
     ;; This function will override the variables used by the previous one
-    ;; (hypertex-overlay-wrapper 'hypertex--render-overlay-at-point)
-    (hypertex--render-overlay-at-point)
-    (if (string= "*Calculator*" (buffer-name))
-        (hypertex--create-line-overlays)
+    (if (and (string= "*Calculator*" (buffer-name))
+             (string-prefix-p "calc" (symbol-name this-command)))
+        (let ((stack-size (calc-stack-size))
+              (selections-enabled (if calc-use-selections 1 0))
+              (inhibit-message t)
+              )
+          (progn
+            (dotimes (idx (calc-stack-size))
+              (progn
+                (calc-enable-selections 0)
+                (calc-roll-down (calc-stack-size))
+                (calc-enable-selections 1)
+                (if (calc-top-selected)
+                    (calc-rewrite-selection "liftselected" 1)
+                  (calc-rewrite-selection "hideselected" 1))
+                  ))
+            (calc-enable-selections selections-enabled)
+            (hypertex--create-line-overlays)
+            ))
       ())))
 
 (defun hypertex--render-overlay-at-point ()
@@ -208,8 +243,7 @@
       (if overlay
           (progn
             (setq disable-point-adjustment t)
-            (setq cursor-type nil)
-            )
+            (setq cursor-type nil))
         (setq cursor-type t)))))
 
 ;; Create or update an overlay on every calc stack entry
@@ -267,7 +301,7 @@
           (calc-embedded nil))))))
 
 ;; Activate the formula at point with calc Embedded mode.
-(defun hypertex--activate-formula ()
+(defun hypertex-activate-formula ()
   (interactive)
   (let* ((frag (hypertex-latex-fragment-at-point)))
     (if frag
@@ -275,15 +309,14 @@
           (goto-char (org-element-property :begin frag))
           ;; Set a bookmark to jump back to
           (bookmark-set "hypertex-formula")
-          ;; Move forward so that we're within the equation and calc-embedded will work.
-          (forward-char)
           (calc-embedded nil)
           (goto-char (org-element-property :begin frag))
           (calc)))))
 
-(defun hypertex--accept-formula ()
+(defun hypertex-accept-formula ()
   (interactive)
   (spacemacs/alternate-window)
+  (bookmark-jump "hypertex-formula")
   (calc-embedded t)
   )
 

@@ -198,3 +198,65 @@
   calcFunc-string) (quote (vec 101 94 123))) x (list (quote
   calcFunc-string) (quote (vec 125)))))))))
 ))
+
+;;; Definition stored by Calc on Sat Jun 22 22:21:41 2019
+(put 'calc-define 'calcFunc-paren '(progn
+ (defun calcFunc-paren (x) (math-check-const x t) (math-normalize x))
+ (put 'calcFunc-paren 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-paren 'math-compose-forms '((latex (1 lambda (x) (list
+  (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 108 101 102 116 40 32))) x (list
+  (quote calcFunc-string) (quote (vec 32 92 114 105 103 104 116
+  41)))))))))
+))
+
+;;; Definition stored by Calc on Sat Jun 22 22:31:41 2019
+(put 'calc-define 'calcFunc-abs '(progn
+))
+
+;;; Definition stored by Calc on Sat Jun 22 22:32:36 2019
+(put 'calc-define 'calcFunc-abs '(progn
+ (put 'calcFunc-abs 'math-compose-forms '((nil (1 lambda (x) (list
+  (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 124))) x (list (quote calcFunc-string)
+  (quote (vec 124)))))))))
+))
+
+;;; Variable "var-liftselected" stored by Calc on Tue Jul  2 18:39:35 2019
+(setq var-liftselected '(vec (calcFunc-assign (calcFunc-select (calcFunc-pand (var x var-x) (calcFunc-pnot (calcFunc-selected (var y var-y))))) (calcFunc-select (calcFunc-selected (var x var-x))))))
+
+
+
+;;; Definition stored by Calc on Tue Jul  2 07:11:34 2019
+(put 'calc-define 'calcFunc-selected '(progn
+ (defun calcFunc-selected (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-selected 'calc-user-defn '(var x var-x))
+))
+
+;;; Definition stored by Calc on Tue Jul  2 07:12:20 2019
+(put 'calc-define 'calcFunc-selected '(progn
+ (defun calcFunc-selected (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-selected 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-selected 'math-compose-forms '((latex (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 109 97 116 104 99 111 108 111 114 98
+  111 120 123 114 101 100 125 123))) x (list (quote calcFunc-string)
+  (quote (vec 125)))))))))
+))
+
+;;; Definition stored by Calc on Tue Jul  2 07:37:57 2019
+(put 'calc-define 'calcFunc-selected '(progn
+ (defun calcFunc-selected (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-selected 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-selected 'math-compose-forms '((latex (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 109 97 116 104 99 111 108 111 114 123
+  114 101 100 125 123))) x (list (quote calcFunc-string) (quote (vec
+  125)))))))))
+))
+
+;;; Variable "var-hideselected" stored by Calc on Tue Jul  2 18:38:12 2019
+(setq var-hideselected '(vec (calcFunc-assign (calcFunc-selected (var x var-x)) (var x var-x))))
