@@ -46,51 +46,14 @@
 (defun hypertex--precommand ()
   (progn
     (setq hypertex--calc-line-numbering calc-line-numbering)
-    (if (and (string= "*Calculator*" (buffer-name))
-             (string-prefix-p "calc" (symbol-name this-command)))
-        (let ((stack-size (calc-stack-size))
-              (selections-enabled (if calc-use-selections 1 0))
-              (inhibit-message t)
-              )
-          (progn
-            (dotimes (idx (calc-stack-size))
-              (progn
-                (calc-enable-selections 0)
-                (calc-roll-down (calc-stack-size))
-                (calc-enable-selections 1)
-                (if (calc-top-selected)
-                    (calc-rewrite-selection "hideselected" 1)
-                  ())
-                ))
-            (calc-enable-selections selections-enabled)
-            ))
-      )
     ))
 
 (defun hypertex--postcommand ()
   (progn
     (hypertex--render-just-exited-overlay)
     ;; This function will override the variables used by the previous one
-    (if (and (string= "*Calculator*" (buffer-name))
-             (string-prefix-p "calc" (symbol-name this-command)))
-        (let ((stack-size (calc-stack-size))
-              (selections-enabled (if calc-use-selections 1 0))
-              (inhibit-message t)
-              )
-          (progn
-            (dotimes (idx (calc-stack-size))
-              (progn
-                (calc-enable-selections 0)
-                (calc-roll-down (calc-stack-size))
-                (calc-enable-selections 1)
-                (if (calc-top-selected)
-                    (calc-rewrite-selection "liftselected" 1)
-                  (calc-rewrite-selection "hideselected" 1))
-                  ))
-            (calc-enable-selections selections-enabled)
-            (hypertex--create-line-overlays)
-            ))
-      ())))
+    (hypertex--create-line-overlays)
+))
 
 (defun hypertex--render-overlay-at-point ()
   (let ((frag (hypertex-latex-fragment-at-point)))
@@ -271,14 +234,52 @@
                          (line-beginning-position)))
            (line-end (line-end-position))
            (line-contents (buffer-substring line-start line-end))
+           (selected-line-contents (hypertex--lift-selection line-contents line-start line-end))
            (ov (hypertex--get-or-create-overlay line-start line-end))
-           (tex (format "\\[ %s \\]" line-contents)))
+           (tex (format "\\[ %s \\]" selected-line-contents)))
       (progn
         (move-overlay ov line-start line-end)
         (hypertex--render-overlay-at tex ov)
         )
           ;(add-face-text-property line-start line-end '(:foreground "green"))
           )))
+
+(defun hypertex--lift-selection (text line-start line-end)
+  (save-excursion
+    (progn
+      (goto-char line-start)
+      (let ((min)
+            (max))
+        (progn
+          (while (and (< (point) line-end)
+                      (not max))
+            (let* ((pt (point))
+                   (face (get-text-property pt 'face))
+                   (selected (equal 'calc-selected-face face)))
+              (progn
+                (if min
+                    (if (not selected)
+                        (setq max pt)
+                      ())
+                  (if selected
+                      (setq min pt)
+                    ()))
+                (forward-char))))
+          (if min
+              (progn
+                (setq max (point))
+                (setq min (- min line-start))
+                (setq max (- max line-start))
+                (concat
+                 (substring text 0 min)
+                 "\\mathcolor{red}{"
+                 (substring text min max)
+                 "}"
+                 (substring text max))
+                )
+            text)
+        )
+      ))))
 
 (defun hypertex--marker-within-frag (marker frag)
   (if marker
