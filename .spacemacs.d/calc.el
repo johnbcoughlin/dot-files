@@ -260,3 +260,46 @@
 
 ;;; Variable "var-hideselected" stored by Calc on Tue Jul  2 18:38:12 2019
 (setq var-hideselected '(vec (calcFunc-assign (calcFunc-selected (var x var-x)) (var x var-x))))
+
+;;; Definition stored by Calc on Thu Jul  4 20:35:12 2019
+(put 'calc-define 'calcFunc-cross '(progn
+ (put 'calcFunc-cross 'math-compose-forms '((latex (2 lambda (a b)
+  (list (quote calcFunc-choriz) (list (quote vec) a (list (quote
+  calcFunc-string) (quote (vec 32 92 116 105 109 101 115 32))) b))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:36:59 2019
+(put 'calc-define 'calcFunc-curl '(progn
+ (defun calcFunc-curl (x) (math-check-const x t) (math-normalize x))
+ (put 'calcFunc-curl 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-curl 'math-compose-forms '((latex (1 lambda (x) (list
+  (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 110 97 98 108 97 32 92 116 105 109 101
+  115 32))) x))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:39:09 2019
+(put 'calc-define 'calcFunc-grad '(progn
+ (defun calcFunc-grad (x) (math-check-const x t) (math-normalize x))
+ (put 'calcFunc-grad 'calc-user-defn '(var x var-x))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:43:20 2019
+(put 'calc-define 'calcFunc-grad '(progn
+ (defun calcFunc-grad (x) (math-check-const x t) (math-normalize x))
+ (put 'calcFunc-grad 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-grad 'math-compose-forms '((latex (1 lambda (x) (list
+  (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 110 97 98 108 97 32))) x))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:43:30 2019
+(put 'calc-define 'calcFunc-divergence '(progn
+ (defun calcFunc-divergence (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-divergence 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-divergence 'math-compose-forms '((latex (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 110 97 98 108 97 32 92 99 100 111 116
+  32))) x))))))
+))
