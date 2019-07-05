@@ -303,3 +303,71 @@
   calcFunc-string) (quote (vec 92 110 97 98 108 97 32 92 99 100 111 116
   32))) x))))))
 ))
+
+;;; Definition stored by Calc on Thu Jul  4 20:48:14 2019
+(put 'calc-define 'calcFunc-integ '(progn
+ (put 'calcFunc-integ 'math-compose-forms '((latex (2 lambda (x v)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 105 110 116 32))) x (list (quote
+  calcFunc-string) (quote (vec 32 92 44 92 109 97 116 104 114 109 123
+  100 125))) v))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:53:34 2019
+(put 'calc-define 'calcFunc-mysubscript '(progn
+ (defun calcFunc-mysubscript (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-mysubscript 'calc-user-defn '(var x var-x))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:53:37 2019
+(put 'calc-define 'calcFunc-mysuperscript '(progn
+ (defun calcFunc-mysuperscript (x) (math-check-const x t)
+  (math-normalize x))
+ (put 'calcFunc-mysuperscript 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-mysuperscript 'math-compose-forms '((nil (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 94 123))) x (list (quote calcFunc-string)
+  (quote (vec 125))))))) (latex (1 lambda (val) (list (quote
+  calcFunc-choriz) (list (quote vec) (list (quote calcFunc-string)
+  (quote (vec 94 123))) val (list (quote calcFunc-string) (quote (vec
+  125)))))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:54:43 2019
+(put 'calc-define 'calcFunc-mysubscript '(progn
+ (defun calcFunc-mysubscript (x) (math-check-const x t) (math-normalize
+  x))
+ (put 'calcFunc-mysubscript 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-mysubscript 'math-compose-forms '((latex (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 95 123))) x (list (quote calcFunc-string)
+  (quote (vec 125)))))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:54:45 2019
+(put 'calc-define 'calcFunc-mysuperscript '(progn
+ (defun calcFunc-mysuperscript (x) (math-check-const x t)
+  (math-normalize x))
+ (put 'calcFunc-mysuperscript 'calc-user-defn '(var x var-x))
+ (put 'calcFunc-mysuperscript 'math-compose-forms '((nil (1 lambda (x)
+  (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 94 123))) x (list (quote calcFunc-string)
+  (quote (vec 125))))))) (latex (1 lambda (x) (list (quote
+  calcFunc-choriz) (list (quote vec) (list (quote calcFunc-string)
+  (quote (vec 94 123))) x (list (quote calcFunc-string) (quote (vec
+  125)))))))))
+))
+
+;;; Definition stored by Calc on Thu Jul  4 20:58:02 2019
+(put 'calc-define 'calcFunc-integ '(progn
+ (put 'calcFunc-integ 'math-compose-forms '((latex (4 lambda (x v sub
+  sup) (list (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 105 110 116))) (list (quote
+  calcFunc-mysubscript) sub) (list (quote calcFunc-mysuperscript) sup) x
+  (list (quote calcFunc-string) (quote (vec 32 92 44 92 109 97 116 104
+  114 109 123 100 125))) v))) (2 lambda (x v) (list (quote
+  calcFunc-choriz) (list (quote vec) (list (quote calcFunc-string)
+  (quote (vec 92 105 110 116 32))) x (list (quote calcFunc-string)
+  (quote (vec 32 92 44 92 109 97 116 104 114 109 123 100 125))) v))))))
+))
