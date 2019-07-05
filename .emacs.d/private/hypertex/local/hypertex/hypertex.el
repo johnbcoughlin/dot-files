@@ -41,6 +41,7 @@
     (remove-hook 'pre-command-hook 'hypertex--precommand)
     (remove-hook 'post-command-hook 'hypertex--postcommand)
     (remove-hook 'post-self-insert-hook 'hypertex--postcommand)
+    (hypertex--remove-overlays)
     ))
 
 (defun hypertex--precommand ()
@@ -211,7 +212,8 @@
 
 ;; Create or update an overlay on every calc stack entry
 (defun hypertex--create-line-overlays ()
-  (if (string= calc-language "latex")
+  (if (and (string= calc-language "latex")
+           (string= "*Calculator*" (buffer-name)))
       (progn
         (goto-char (point-min))
         ; Skip the header line --- Emacs Calculator Mode ---
@@ -238,6 +240,7 @@
            (ov (hypertex--get-or-create-overlay line-start line-end))
            (tex (format "\\[ %s \\]" selected-line-contents)))
       (progn
+        (message selected-line-contents)
         (move-overlay ov line-start line-end)
         (hypertex--render-overlay-at tex ov)
         )
@@ -267,12 +270,14 @@
                 (forward-char))))
           (if min
               (progn
-                (setq max (point))
+                (if (not max)
+                    (setq max (point))
+                  ())
                 (setq min (- min line-start))
                 (setq max (- max line-start))
                 (concat
                  (substring text 0 min)
-                 "\\mathcolor{red}{"
+                 "\\colornucleus{red}{"
                  (substring text min max)
                  "}"
                  (substring text max))
@@ -280,6 +285,11 @@
             text)
         )
       ))))
+
+(defun hypertex--remove-overlays ()
+  (with-current-buffer "*Calculator*"
+    (dolist (ov (overlays-in (point-min) (point-max)))
+      (delete-overlay ov))))
 
 (defun hypertex--marker-within-frag (marker frag)
   (if marker
