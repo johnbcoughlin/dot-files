@@ -242,9 +242,7 @@
       (progn
         (message selected-line-contents)
         (move-overlay ov line-start line-end)
-        (hypertex--render-overlay-at tex ov)
-        )
-          ;(add-face-text-property line-start line-end '(:foreground "green"))
+        (hypertex--render-overlay-at tex ov))
           )))
 
 (defun hypertex--lift-selection (text line-start line-end)
@@ -286,6 +284,17 @@
         )
       ))))
 
+
+(defun hypertex-hide-overlay-at-point ()
+  (interactive)
+  (let* ((overlays (overlays-at (point)))
+         (overlays (seq-filter (lambda (ov)
+                                 (eq (overlay-get ov 'org-overlay-type) 'org-hypertex-overlay))
+                               overlays)))
+    (if (eq 0 (length overlays))
+        (hypertex--render-overlay-at-point)
+      (delete-overlay (car overlays)))))
+
 (defun hypertex--remove-overlays ()
   (with-current-buffer "*Calculator*"
     (dolist (ov (overlays-in (point-min) (point-max)))
@@ -311,6 +320,42 @@
         (when (memq type '(latex-environment latex-fragment))
           (calc-embedded nil))))))
 
+(defun hypertex-next-formula ()
+  (interactive)
+  (let* ((frag (hypertex-latex-fragment-at-point))
+         (math-regexp "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}")
+         )
+    (progn
+      (if frag
+          (progn
+            (goto-char (org-element-property :end frag))
+            (forward-char))
+        ())
+      (re-search-forward math-regexp (point-max) t)
+      (let* ((frag (hypertex-latex-fragment-at-point))
+             (begin (org-element-property :begin frag)))
+        (goto-char begin))
+      (setq disable-point-adjustment t))))
+
+(defun hypertex-prev-formula ()
+  (interactive)
+  (let* ((frag (hypertex-latex-fragment-at-point))
+         (math-regexp "\\$\\|\\\\[([]\\|^[ \t]*\\\\begin{[A-Za-z0-9*]+}"))
+    (progn
+      (if frag
+          (progn
+            (goto-char (org-element-property :begin frag))
+            (backward-char))
+        ())
+      (re-search-backward math-regexp (point-min) t)
+      (if (eq ?$ (char-after (point)))
+          ;; Go backwards a character because frag-at-point doesn't work on the closing $
+          (backward-char))
+      (let* ((frag (hypertex-latex-fragment-at-point))
+             (begin (org-element-property :begin frag)))
+        (goto-char begin))
+      (setq disable-point-adjustment t))))
+
 ;; Activate the formula at point with calc Embedded mode.
 (defun hypertex-activate-formula ()
   (interactive)
@@ -319,9 +364,11 @@
         (progn
           (goto-char (org-element-property :begin frag))
           ;; Set a bookmark to jump back to
+          (forward-char)
           (bookmark-set "hypertex-formula")
           (calc-embedded nil)
           (goto-char (org-element-property :begin frag))
+          (hypertex--render-overlay-at-point)
           (calc)))))
 
 (defun hypertex-accept-formula ()
@@ -329,7 +376,30 @@
   (spacemacs/alternate-window)
   (bookmark-jump "hypertex-formula")
   (calc-embedded t)
-  )
+  (let ((frag (hypertex-latex-fragment-at-point)))
+    (goto-char (org-element-property :end frag)))
+  (hypertex-hydra/body))
+
+(defun hypertex-insert-inline-formula ()
+  (interactive)
+  (let ((calc-embedded-open-new-formula "$")
+        (calc-embedded-close-new-formula "$"))
+    (progn
+      (calc-embedded-new-formula)
+      (bookmark-set "hypertex-formula")
+      (hypertex--render-overlay-at-point)
+      (calc))))
+
+(defun hypertex-insert-display-formula ()
+  (interactive)
+  (insert "\n")
+  (let ((calc-embedded-open-new-formula "\\[\n")
+        (calc-embedded-close-new-formula "\n\\]"))
+    (progn
+      (calc-embedded-new-formula)
+      (bookmark-set "hypertex-formula")
+      (hypertex--render-overlay-at-point)
+      (calc))))
 
 ;;;###autoload
 (defun turn-on-hypertex-mode ()

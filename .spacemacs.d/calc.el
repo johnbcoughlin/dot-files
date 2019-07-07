@@ -371,3 +371,58 @@
   (quote (vec 92 105 110 116 32))) x (list (quote calcFunc-string)
   (quote (vec 32 92 44 92 109 97 116 104 114 109 123 100 125))) v))))))
 ))
+
+
+;;; Definition stored by Calc on Fri Jul  5 14:14:14 2019
+(put 'calc-define 'calc-foobar '(progn
+ (defun calc-foobar nil (interactive) (calc-wrapper (calc-enter-result 2 "foob" (cons (quote calcFunc-foobar) (calc-top-list-n 2)))))
+ (put 'calc-foobar 'calc-user-defn 't)
+ (defun calcFunc-foobar (x y) (math-check-const x t) (math-check-const
+  y t) (math-normalize (list (quote +) x y)))
+ (put 'calcFunc-foobar 'calc-user-defn '(+ (var x var-x) (var y
+  var-y)))
+))
+
+;;; Definition stored by Calc on Fri Jul  5 17:42:42 2019
+(put 'calc-define 'calc-inline-div '(progn
+ (defun calc-inline-div nil (interactive) (calc-wrapper (calc-enter-result 2 "div" (cons (quote calcFunc-inline-div) (calc-top-list-n 2)))))
+ (put 'calc-inline-div 'calc-user-defn 't)
+ (defun calcFunc-inline-div (x y) (math-check-const x t)
+  (math-check-const y t) (math-normalize (list (quote /) x y)))
+ (put 'calcFunc-inline-div 'calc-user-defn '(/ (var x var-x) (var y
+  var-y)))
+ (put 'calc-inline-div 'math-compose-forms '((latex (2 lambda (x y)
+  (list (quote calcFunc-choriz) (list (quote vec) x (list (quote
+  calcFunc-string) (quote (vec 47))) y))))))
+ (define-key calc-mode-map "z/" 'calc-inline-div)
+))
+
+
+;;; Definition stored by Calc on Sat Jul  6 19:58:27 2019
+(put 'calc-define 'calcFunc-fdiv '(progn
+ (put 'calcFunc-fdiv 'math-compose-forms '((latex (2 lambda (a b) (list
+  (quote calcFunc-choriz) (list (quote vec) (list (quote
+  calcFunc-string) (quote (vec 92 102 114 97 99 123))) a (list (quote
+  calcFunc-string) (quote (vec 125 123))) b (list (quote
+  calcFunc-string) (quote (vec 125)))))))))
+))
+
+;;; Definition stored by Calc on Sat Jul  6 20:02:07 2019
+(put 'calc-define 'calcFunc-div '(progn
+ (put 'calcFunc-div 'math-compose-forms '((latex (2 lambda (a b) (list
+  (quote calcFunc-choriz) (list (quote vec) a (list (quote
+  calcFunc-string) (quote (vec 47))) b))))))
+))
+
+;;; Definition stored by Calc on Sat Jul  6 20:41:20 2019
+(put 'calc-define 'calc-inline-div '(progn
+ (defun calc-inline-div nil (interactive) (calc-wrapper (calc-enter-result 2 "div" (cons (quote calcFunc-inline-div) (calc-top-list-n 2)))))
+ (put 'calc-inline-div 'calc-user-defn 't)
+ (defun calcFunc-inline-div (x y) (math-check-const x t)
+  (math-check-const y t) (math-normalize (list (quote /) x y)))
+ (put 'calcFunc-inline-div 'calc-user-defn '(/ (var x var-x) (var y
+  var-y)))
+ (put 'calc-inline-div 'math-compose-forms '((latex (2 lambda (x y)
+  (list (quote calcFunc-choriz) (list (quote vec) x (list (quote
+  calcFunc-string) (quote (vec 47))) y))))))
+))
