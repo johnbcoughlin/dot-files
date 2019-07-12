@@ -517,16 +517,6 @@ you should place your code here."
 
 ;;; Calc
 (defun jack/config-calc ()
-  (defhydra hypertex-hydra (:color red)
-    "foo"
-    ("h" hypertex-hide-overlay-at-point "show/hide overlays")
-    ("n" hypertex-next-formula "next")
-    ("p" hypertex-prev-formula "prev")
-    ("r" hypertex-activate-formula "replace" :color blue)
-    ("i" hypertex-insert-inline-formula "Insert $formula$" :color blue)
-    ("o" hypertex-insert-display-formula "Insert \\[ display formula \\]" :color blue)
-    ("q" nil "quit" :color blue))
-
   (with-eval-after-load 'calc
     (progn
       (define-key calc-mode-map " " spacemacs-cmds)
@@ -548,7 +538,6 @@ you should place your code here."
 
   (with-eval-after-load 'org
     (progn
-      (define-key org-mode-map (kbd "C-M-f") 'hypertex-hydra/body)
       (bind-keys :map org-mode-map
                  :prefix "C-x l"
                  :prefix-map hypertex

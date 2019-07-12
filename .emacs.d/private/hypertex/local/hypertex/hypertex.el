@@ -442,7 +442,7 @@
 (defvar math-rewrite-for-display t)
 
 (defun math-format-stack-value (entry)
-  (message "formatting stack value")
+  (message "formatting stack value %s" entry)
   (setq calc-selection-cache-entry calc-selection-cache-default-entry)
   (let* ((a (car entry))
 	       (math-comp-selected (nth 2 entry))
@@ -450,22 +450,27 @@
 		              ((eq calc-display-raw t) (format "%s" a))
 		              ((stringp a) a)
 		              ((eq a 'top-of-stack) (propertize "." 'font-lock-face 'bold))
+                  ;; This happens when you select part of a formula without changing it
 		              (calc-prepared-composition
 		               calc-prepared-composition)
 		              ((and (Math-scalarp a)
 			                  (memq calc-language '(nil flat unform))
 			                  (null math-comp-selected))
 		               (math-format-number a))
-		              (math-rewrite-for-display (require 'calc-ext)
-                                            (let ((math-rewrite-for-display nil)
-                                                  (rules '(var DispRules var-DispRules)))
-                                              (message "rewriting for display")
-                                              (math-compose-expr (math-rewrite a rules) 0)))
+		              ((and math-rewrite-for-display
+                        (not (string= calc-language "unform")))
+                   (require 'calc-ext)
+                   (let ((math-rewrite-for-display nil)
+                         (rules '(var DispRules var-DispRules)))
+                     (message "rewriting for display")
+                     (math-compose-expr (math-rewrite (copy-tree a) rules) 0)))
                   (t (require 'calc-ext)
                      (math-compose-expr a 0))))
 	       (off (math-stack-value-offset c))
 	       s w)
     (and math-comp-selected (setq calc-any-selections t))
+    (message "selected: %s" math-comp-selected)
+    (message "comped: %s" c)
     (setq w (cdr off)
 	        off (car off))
     (when (> off 0)
@@ -519,12 +524,15 @@
           (setq calc-selection-cache-entry entry
                 calc-selection-cache-num num
                 calc-selection-cache-comp
-                (let ((math-comp-tagged t)
-                      (math-rewrite-for-display nil)
-                      (rules '(var DispRules var-DispRules)))
-                  (message "%s" (car entry))
-                  (message "%s" (math-rewrite (car entry) rules))
-                  (math-compose-expr (math-rewrite (car entry) rules) 0))
+                (let* ((rules '(var DispRules var-DispRules))
+                       (expr (if (and math-rewrite-for-display
+                                      (not (string= calc-language "unform")))
+                                 (math-rewrite (copy-tree (car entry)) rules)
+                               (car entry)))
+                       (math-comp-tagged t)
+                       (math-rewrite-for-display nil))
+                  (message "%s" expr)
+                  (math-compose-expr expr 0))
                 calc-selection-cache-offset
                 (+ (car (math-stack-value-offset calc-selection-cache-comp))
                    (length calc-left-label)
@@ -573,3 +581,10 @@
 		                ":\n" fmt "\n"))))
     math-rewrite-whole-expr))
 
+
+
+(let* ((s calc-stack)
+       (e (cdr s))
+       (a (car (car e)))
+       (b (nth 2 (car e))))
+  (message "a: %s, b: %s, eq: %s" a b (eq a b)))
