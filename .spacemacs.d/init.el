@@ -36,7 +36,8 @@ values."
    '(
      html
      ruby
-     osx
+     (osx :variables osx-use-dictionary-app nil)
+     spacemacs-language
      ivy
      emacs-lisp
      cdlatex
@@ -881,8 +882,35 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;; Windows
 (defun jack/config-windows ()
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
-  (when (version<= "26.0.50" emacs-version )
-    (global-display-line-numbers-mode))
+  (spacemacs/set-leader-keys "o l" 'global-display-line-numbers-mode)
   )
 ;;;; Customization
 
+
+;;; Ediff
+(defun turn-off-auto-save-mode (buf)
+  (message "turning off auto-save in %s" buf)
+  (with-current-buffer buf (auto-save-mode 0)))
+
+(defun turn-on-auto-revert-mode (buf)
+  (message "turning off auto-save in %s" buf)
+  (with-current-buffer buf (auto-revert-mode)))
+
+(defun jack/ediff-disable-auto-save-mode ()
+  (mapcar
+   'turn-off-auto-save-mode
+   (list ediff-buffer-A
+         ediff-buffer-B
+         ediff-buffer-C)))
+
+(defun jack/ediff-enable-auto-revert-mode ()
+  (mapcar
+   'turn-on-auto-revert-mode
+   (list ediff-buffer-A
+         ediff-buffer-B
+         ediff-buffer-C)))
+
+(defun jack/unison-prepare-ediff-buffers ()
+  (progn
+    (jack/ediff-enable-auto-revert-mode)
+    (jack/ediff-disable-auto-save-mode)))

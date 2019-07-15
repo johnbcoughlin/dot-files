@@ -8,6 +8,8 @@
     (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
      ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
  '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
+ '(define-word-default-service (quote webster))
+ '(ediff-keep-variants nil)
  '(fill-column 80)
  '(latex-run-command "xelatex")
  '(org-agenda-clock-consistency-checks
@@ -55,6 +57,47 @@
  '(org-agenda-todo-ignore-scheduled 1)
  '(org-agenda-window-setup (quote other-window))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (latex . t))))
+ '(org-capture-templates
+   (quote
+    (("j" "Journal")
+     ("jp" "Personal Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
+      "* %?
+%U
+")
+     ("jw" "Work Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
+      "* %?
+%U
+" :jump-to-captured t :clock-in t :clock-resume t)
+     ("m" "Meeting")
+     ("mm" "Meeting" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* MEETING with %? :MEETING:")
+     ("ms" "Standup" entry
+      (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Standups")
+      "** MEETING %u :MEETING:standup:
+%T" :clock-in t :clock-resume t)
+     ("s" "Snippet")
+     ("sv" "Contents of selection" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* Snippet :snippet:
+%i")
+     ("t" "New task" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* TODO %^{Task}" :clock-in t :clock-resume t)
+     ("p" "Phone call" entry
+      (file "/ssh:emacs-node:/home/jack/org/refile.org")
+      "* Phone Call %? :PHONE:
+%U" :clock-in t :clock-resume t)
+     ("d" "Item to drill")
+     ("dk" "New key binding" entry
+      (file+olp "~/org/emacs.org" "Key Bindings")
+      "*** Task :drill:
+%^{Task}
+**** Shortcut
+%^{Shortcut}"))) t)
+ '(org-clock-in-switch-to-state jack/org-clock-in-switch-state t)
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
  '(org-format-latex-header "%&~/.emacs.d/private/header
@@ -126,7 +169,8 @@
      (sequence "WAIT(w@/!)" "HOLD(h!/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
  '(package-selected-packages
    (quote
-    (writeroom-mode olivetti outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+    (smeargle orgit magit-gitflow magit-popup gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit transient git-commit with-editor writeroom-mode olivetti outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+ '(send-mail-function (quote mailclient-send-it))
  '(split-height-threshold 120)
  '(split-width-threshold 100))
 (custom-set-faces
