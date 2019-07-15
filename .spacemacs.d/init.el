@@ -47,6 +47,7 @@ values."
      git
      ;hypertex
      outline-magic
+     pdf-tools
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -56,7 +57,7 @@ values."
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '(org-projectile)
+   dotspacemacs-excluded-packages '(org-projectile linum)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and uninstall any
@@ -127,15 +128,15 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(sanityinc-solarized-light
+                         sanityinc-solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Inconsolata"
                                :size 13
-                               :weight normal
+                               :weight light
                                :width normal
                                :powerline-scale 1.1)
    ;; The leader key
@@ -316,6 +317,7 @@ you should place your code here."
   (setq custom-file "~/.spacemacs.d/custom.el")
   (load custom-file)
 
+  (jack/config-calc)
   (jack/config-evil)
   (jack/config-ivy)
   (with-eval-after-load 'org
@@ -347,6 +349,8 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#0a0814" "#f2241f" "#67b11d" "#b1951d" "#4f97d7" "#a31db1" "#28def0" "#b2b2b2"])
  '(cdlatex-command-alist
    (quote
     (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
@@ -519,6 +523,50 @@ you should place your code here."
  )
 
 
+;;; Calc
+(defun jack/config-calc ()
+  (defhydra hypertex-hydra (:color red)
+    "foo"
+    ("h" hypertex-hide-overlay-at-point "show/hide overlays")
+    ("n" hypertex-next-formula "next")
+    ("p" hypertex-prev-formula "prev")
+    ("r" hypertex-activate-formula "replace" :color blue)
+    ("i" hypertex-insert-inline-formula "Insert $formula$" :color blue)
+    ("o" hypertex-insert-display-formula "Insert \\[ display formula \\]" :color blue)
+    ("q" nil "quit" :color blue))
+
+  (with-eval-after-load 'calc
+    (progn
+      (define-key calc-mode-map " " spacemacs-cmds)
+      (define-key calc-mode-map (kbd "<C-return>") 'hypertex-accept-formula)
+      ;(define-key calc-mode-map "s-o" 'hypertex--accept-formula)
+      (setq calc-settings-file "~/.spacemacs.d/calc.el")
+      (setq calc-embedded-open-plain "\\cmt{")
+      (setq calc-embedded-close-plain "} ")
+      (bind-keys :map calc-mode-map
+                 :prefix "C-x l"
+                 :prefix-map hypertex
+                 ("a" . hypertex-accept-formula)
+                 ("f" . hypertex-activate-formula)
+                 ("$" . hypertex-insert-inline-formula)
+                 ("[" . hypertex-insert-display-formula)
+                 )
+      )
+    )
+
+  (with-eval-after-load 'org
+    (progn
+      (define-key org-mode-map (kbd "C-M-f") 'hypertex-hydra/body)
+      (bind-keys :map org-mode-map
+                 :prefix "C-x l"
+                 :prefix-map hypertex
+                 ("f" . hypertex-activate-formula)
+                 ("a" . hypertex-accept-formula)
+                 ("$" . hypertex-insert-inline-formula)
+                 ("[" . hypertex-insert-display-formula)
+       )
+      ))
+  )
 ;;; Evil
 (defun jack/config-evil ()
   (global-set-key (kbd "C-q") 'evil-escape))
@@ -528,6 +576,10 @@ you should place your code here."
   (define-key ivy-minibuffer-map (kbd "S-SPC") nil))
 ;;; Org Mode
 (defun jack/config-org ()
+;;;; Babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((calc . t)))
 ;;;; Keybindings
   (spacemacs/set-leader-keys "o c" 'counsel-org-agenda-headlines)
 ;;;; Agenda
@@ -883,7 +935,12 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 (defun jack/config-windows ()
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
   (spacemacs/set-leader-keys "o l" 'global-display-line-numbers-mode)
-  )
+  (global-display-line-numbers-mode 1)
+  (setq display-line-numbers-width-start t)
+  (with-eval-after-load 'linum
+    (progn
+      ;; linum makes various modes very slow
+      (global-linum-mode 0))))
 ;;;; Customization
 
 
@@ -914,3 +971,5 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
   (progn
     (jack/ediff-enable-auto-revert-mode)
     (jack/ediff-disable-auto-save-mode)))
+;;;; Customization
+

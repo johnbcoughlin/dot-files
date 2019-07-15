@@ -1,8 +1,12 @@
 % To compile: latex -ini -jobname="header" "&latex header.tex\dump"
 
+\def\encodingdefault{OT1}\normalfont
+\everyjob\expandafter{\the\everyjob\def\encodingdefault{TU}\normalfont}
+
 \documentclass{article}
 \usepackage[usenames]{color}
 \usepackage[normalem]{ulem}
+\usepackage{comment}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{textcomp}
@@ -68,6 +72,7 @@
 
 \newcommand\cursor{\makebox[0pt]{\color{cursor} $|$}}
 
+
 \makeatletter
 \def\mathcolor#1#{\@mathcolor{#1}}
 \def\@mathcolor#1#2#3{%
@@ -77,6 +82,8 @@
   \endgroup
 }
 \makeatother
+
+\newcommand{\cmt}[1]{\ignorespaces}
 
 %\newcommand{\mathcolorbox}[2]{\adjustbox{bgcolor=#1}{$\displaystyle #2$}}
 %\newcommand{\cursor}[1]{\adjustbox{}}
