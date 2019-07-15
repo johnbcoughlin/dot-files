@@ -1,5 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
-;; -*- eval: (outline-minor-mode +1)
+;; -*- eval: (outline-minor-mode 1)
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -46,6 +46,13 @@ values."
      hypertex
      outline-magic
      pdf-tools
+     (mu4e :variables
+           mu4e-installation-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+           mu4e-spacemacs-layout-name "@Mu4e"
+           mu4e-spacemacs-layout-binding "m"
+           mu4e-spacemacs-kill-layout-on-exit t
+           )
+     finance
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -316,6 +323,7 @@ you should place your code here."
   (load custom-file)
 
   (jack/config-calc)
+  (jack/config-email)
   (jack/config-evil)
   (jack/config-ivy)
   (jack/config-org)
@@ -547,6 +555,23 @@ you should place your code here."
                  ("[" . hypertex-insert-display-formula)
        )
       ))
+  )
+;;; Email
+(defun jack/config-email ()
+  (with-eval-after-load 'mu4e
+    (progn
+      (setq mu4e-maildir "~/mail"
+            mu4e-trash-folder "/trash"
+            mu4e-refile-folder "/archive"
+            mu4e-get-mail-command "mbsync -a"
+            mu4e-view-show-images t
+            mu4e~get-mail-password-regexp "^Enter the password for johnbcoughlin@gmail.com at my.1password.com:"
+            )))
+  (setq user-mail-address "jack@jackc.me"
+        user-full-name "Jack Coughlin")
+  (setq smtpmail-smtp-server "smtp.fastmail.com"
+        smtpmail-smtp-service 465
+        smtpmail-stream-type 'ssl)
   )
 ;;; Evil
 (defun jack/config-evil ()
@@ -876,3 +901,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 
 
 
+
+;;; GC
+(setq garbage-collection-messages t)
+(setq gc-cons-threshold 800000)
