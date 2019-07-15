@@ -11,6 +11,8 @@
     (("h" "Insert a hatted element" "\\hat{?}" cdlatex-position-cursor nil nil t)
      ("d," "Insert a differential element" "\\,d" ignore nil nil t))))
  '(cdlatex-math-symbol-alist (quote ((114 ("\\rho" "\\rcurs" "\\textbf{\\rcurs}")))))
+ '(define-word-default-service (quote webster))
+ '(ediff-keep-variants nil)
  '(fill-column 80)
  '(latex-run-command "xelatex")
  '(org-agenda-clock-consistency-checks
@@ -71,9 +73,14 @@
       "* %?
 %U
 " :jump-to-captured t :clock-in t :clock-resume t)
-     ("m" "Meeting" entry
+     ("m" "Meeting")
+     ("mm" "Meeting" entry
       (file "/ssh:emacs-node:/home/jack/org/refile.org")
       "* MEETING with %? :MEETING:")
+     ("ms" "Standup" entry
+      (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Standups")
+      "** MEETING %u :MEETING:standup:
+%T" :clock-in t :clock-resume t)
      ("s" "Snippet")
      ("sv" "Contents of selection" entry
       (file "/ssh:emacs-node:/home/jack/org/refile.org")
@@ -92,8 +99,8 @@
       "*** Task :drill:
 %^{Task}
 **** Shortcut
-%^{Shortcut}"))))
- '(org-clock-in-switch-to-state "NEXT")
+%^{Shortcut}"))) t)
+ '(org-clock-in-switch-to-state jack/org-clock-in-switch-state t)
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
  '(org-format-latex-header "%&~/.emacs.d/private/header

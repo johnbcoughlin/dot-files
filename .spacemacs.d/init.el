@@ -36,14 +36,16 @@ values."
    '(
      html
      ruby
-     osx
+     (osx :variables osx-use-dictionary-app nil)
+     spacemacs-language
      ivy
      emacs-lisp
      cdlatex
      latex
      rust
      org
-     hypertex
+     git
+     ;hypertex
      outline-magic
      pdf-tools
      (mu4e :variables
@@ -326,7 +328,8 @@ you should place your code here."
   (jack/config-email)
   (jack/config-evil)
   (jack/config-ivy)
-  (jack/config-org)
+  (with-eval-after-load 'org
+    (jack/config-org))
   (jack/config-rust)
   (jack/config-tramp)
   (jack/config-windows)
@@ -418,9 +421,14 @@ you should place your code here."
       "* %?
 %U
 " :jump-to-captured t :clock-in t :clock-resume t)
-     ("m" "Meeting" entry
+     ("m" "Meeting")
+     ("mm" "Meeting" entry
       (file "/ssh:emacs-node:/home/jack/org/refile.org")
       "* MEETING with %? :MEETING:")
+     ("ms" "Standup" entry
+      (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Standups")
+      "** MEETING %u :MEETING:standup:
+%T" :clock-in t :clock-resume t)
      ("s" "Snippet")
      ("sv" "Contents of selection" entry
       (file "/ssh:emacs-node:/home/jack/org/refile.org")
@@ -440,7 +448,7 @@ you should place your code here."
 %^{Task}
 **** Shortcut
 %^{Shortcut}"))))
- '(org-clock-in-switch-to-state "NEXT")
+ '(org-clock-in-switch-to-state jack/org-clock-in-switch-state)
  '(org-drill-left-cloze-delimiter "{[")
  '(org-drill-right-cloze-delimiter "]}")
  '(org-format-latex-header "%&~/.emacs.d/private/header
@@ -512,7 +520,7 @@ you should place your code here."
      (sequence "WAIT(w@/!)" "HOLD(h!/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
  '(package-selected-packages
    (quote
-    (writeroom-mode olivetti outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+    (smeargle orgit magit-gitflow magit-popup gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit transient git-commit with-editor writeroom-mode olivetti outline-magic posframe dash-functional anki-editor rustic ht xterm-color web-mode tagedit slim-mode scss-mode sass-mode pug-mode haml-mode emmet-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby fuzzy company-statistics company-auctex company auto-yasnippet yasnippet ac-ispell auto-complete cdlatex org-projectile org-category-capture org-present org-pomodoro org-plus-contrib org-mime org-download org-bullets alert log4e gntp htmlize gnuplot auctex toml-mode racer pos-tip cargo markdown-mode rust-mode reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-make google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
  '(split-height-threshold 120)
  '(split-width-threshold 100))
 (custom-set-faces
@@ -587,14 +595,58 @@ you should place your code here."
    'org-babel-load-languages
    '((calc . t)))
 ;;;; Keybindings
+  (spacemacs/set-leader-keys "o c" 'counsel-org-agenda-headlines)
 ;;;; Agenda
   (setq org-agenda-files
-        (quote
-         ("/ssh:emacs-node:/home/jack/org"
-          "~/src/hypertex/hypertex.org")))
+    (quote
+      ("/ssh:emacs-node:/home/jack/org"
+      ; "~/src/hypertex/hypertex.org"
+      )))
+;;;; Capture
+  (setq org-capture-templates
+   (quote
+    (("j" "Journal")
+     ("jp" "Personal Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/journal.org")
+      "* %?
+%U
+")
+     ("jw" "Work Journal" entry
+      (file+olp+datetree "/ssh:emacs-node:/home/jack/org/diary.org")
+      "* %?
+%U
+" :jump-to-captured t :clock-in t :clock-resume t)
+      ("m" "Meeting")
+      ("mm" "Meeting" entry
+       (file "/ssh:emacs-node:/home/jack/org/refile.org")
+       "* MEETING with %? :MEETING:")
+      ("ms" "Standup" entry
+       (file+olp "/ssh:emacs-node:/home/jack/org/work.org" "Standups")
+       "** MEETING %u :MEETING:standup:
+%T" :clock-in t :clock-resume t)
+      ("s" "Snippet")
+      ("sv" "Contents of selection" entry
+       (file "/ssh:emacs-node:/home/jack/org/refile.org")
+       "* Snippet :snippet:
+%i")
+      ("t" "New task" entry
+       (file "/ssh:emacs-node:/home/jack/org/refile.org")
+       "* TODO %^{Task}" :clock-in t :clock-resume t)
+      ("p" "Phone call" entry
+       (file "/ssh:emacs-node:/home/jack/org/refile.org")
+       "* Phone Call %? :PHONE:
+%U" :clock-in t :clock-resume t)
+      ("d" "Item to drill")
+      ("dk" "New key binding" entry
+       (file+olp "~/org/emacs.org" "Key Bindings")
+       "*** Task :drill:
+%^{Task}
+**** Shortcut
+%^{Shortcut}"))))
+;;;; Clocking
+  (setq org-clock-in-switch-to-state 'jack/org-clock-in-switch-state)
 ;;;; cdlatex
-  (with-eval-after-load 'org
-    (define-key org-cdlatex-mode-map ";" 'cdlatex-math-symbol))
+  (define-key org-cdlatex-mode-map ";" 'cdlatex-math-symbol)
   (setq cdlatex-math-symbol-prefix 59)
 ;;;; OS X Widget
   ;; Alert menu bar app when clocking in and out
@@ -602,6 +654,11 @@ you should place your code here."
   (add-hook 'org-clock-out-hook (lambda () (call-process "/usr/bin/osascript" nil 0 nil "-e" "tell application \"org-clock-statusbar\" to clock out")))
   )
 ;;;; Helper Functions
+;;;;; Clocking
+(defun jack/org-clock-in-switch-state (state)
+  (if (member state '("MEETING" "PHONE"))
+      state
+    "NEXT"))
 ;;;;; Projects
 ;; Functions taken from http://doc.norang.ca/org-mode#Projects
 ;; Modified where relevant
@@ -891,6 +948,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;; Windows
 (defun jack/config-windows ()
   (spacemacs/set-leader-keys "o f" 'toggle-frame-fullscreen)
+  (spacemacs/set-leader-keys "o l" 'global-display-line-numbers-mode)
   (global-display-line-numbers-mode 1)
   (setq display-line-numbers-width-start t)
   (with-eval-after-load 'linum
@@ -900,6 +958,34 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;;;; Customization
 
 
+;;; Ediff
+(defun turn-off-auto-save-mode (buf)
+  (message "turning off auto-save in %s" buf)
+  (with-current-buffer buf (auto-save-mode 0)))
+
+(defun turn-on-auto-revert-mode (buf)
+  (message "turning off auto-save in %s" buf)
+  (with-current-buffer buf (auto-revert-mode)))
+
+(defun jack/ediff-disable-auto-save-mode ()
+  (mapcar
+   'turn-off-auto-save-mode
+   (list ediff-buffer-A
+         ediff-buffer-B
+         ediff-buffer-C)))
+
+(defun jack/ediff-enable-auto-revert-mode ()
+  (mapcar
+   'turn-on-auto-revert-mode
+   (list ediff-buffer-A
+         ediff-buffer-B
+         ediff-buffer-C)))
+
+(defun jack/unison-prepare-ediff-buffers ()
+  (progn
+    (jack/ediff-enable-auto-revert-mode)
+    (jack/ediff-disable-auto-save-mode)))
+;;;; Customization
 
 
 ;;; GC
